@@ -1,7 +1,6 @@
 -- If the currently set up store is the PreBoss store before the final boss of a run, replace the Salute logic with the tipping logic
 
 local originalCharonUnitSetData = game.UnitSetData.NPC_Charon
-
 local tippingInteractVoicelines = game.UnitSetData.NPC_Charon.NPC_Charon_01.InteractVoiceLines
 -- These are the "SaluteVoiceLines"
 tippingInteractVoicelines[1] = {
@@ -26,11 +25,8 @@ modutil.mod.Path.Wrap("SetupWorldShop", function(base, source, args)
 
 	-- We need to be in either the Tartarus (I) or Olympus (P) PreBoss shop
 	-- TODO: Once the final overworld region is added, change Olympus to that
-	-- TODO: For debugging, using Erebus (F)
-	if (game.CurrentRun.CurrentRoom.RoomSetName == "I" or game.CurrentRun.CurrentRoom.RoomSetName == "P" or game.CurrentRun.CurrentRoom.RoomSetName == "F") then
+	if (game.CurrentRun.CurrentRoom.RoomSetName == "I" or game.CurrentRun.CurrentRoom.RoomSetName == "P") then
 		if string.find(game.CurrentRun.CurrentRoom.Name, "PreBoss") then
-			game.UnitSetData.NPC_Charon.NPC_Charon_01.SpecialInteractCooldown = 999
-
 			game.UnitSetData.NPC_Charon.NPC_Charon_01.UseTextSpecial = "ModsNikkelMCharonsTipJar_NPCUseTextSpecial"
 			game.UnitSetData.NPC_Charon.NPC_Charon_01.UseTextTalkGiftAndSpecial =
 			"ModsNikkelMCharonsTipJar_NPCUseTextGiftAndSpecial"
@@ -41,7 +37,6 @@ modutil.mod.Path.Wrap("SetupWorldShop", function(base, source, args)
 
 			game.UnitSetData.NPC_Charon.NPC_Charon_01.SpecialInteractFunctionName = "ModsNikkelMCharonsTipJarTipCharon"
 
-			-- Overwrite the Interact voicelines
 			game.UnitSetData.NPC_Charon.NPC_Charon_01.InteractVoiceLines = tippingInteractVoicelines
 		end
 	end
@@ -49,6 +44,7 @@ modutil.mod.Path.Wrap("SetupWorldShop", function(base, source, args)
 	base(source, args)
 end)
 
+-- TODO: If the player has no money when approaching Charon, use the normal salute useText and function name
 function game.ModsNikkelMCharonsTipJarTipCharon(usee, args)
 	local moneyTipped = game.GameState.Resources.Money
 	if moneyTipped == 0 then
@@ -56,7 +52,7 @@ function game.ModsNikkelMCharonsTipJarTipCharon(usee, args)
 	end
 
 	-- Remove money
-	game.SpendResources({ Money = moneyTipped }, "ModsNikkelMCharonsTipJarCharonTip", { SkipQuestStatusCheck = true, }) --Silent = true
+	game.SpendResources({ Money = moneyTipped }, "ModsNikkelMCharonsTipJarCharonTip")
 	-- Count towards rewards card progress
 	game.HandleCharonPurchase("ModsNikkelMCharonsTipJarTipCharon", moneyTipped)
 	-- Update UI
