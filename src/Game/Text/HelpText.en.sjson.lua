@@ -1,24 +1,29 @@
 local order = {
   "Id",
-  "DisplayName"
+  "DisplayName",
+  "OverwriteLocalization"
 }
 
 local newData = {
 	{
-		Id = "ModsNikkelMCharonsTipJarNPCUseTextSpecial",
-		DisplayName = "{SI} Tip"
+		Id = "ModsNikkelMCharonsTipJar_NPCUseTextSpecial",
+		DisplayName = "{SI} Tip {$GameState.Resources.Money}{!Icons.Currency}",
+    OverwriteLocalization = true
 	},
 	{
-		Id = "ModsNikkelMCharonsTipJarNPCUseTextGiftAndSpecial",
-		DisplayName = "{G} Gift\n {SI} Tip"
+		Id = "ModsNikkelMCharonsTipJar_NPCUseTextGiftAndSpecial",
+		DisplayName = "{G} Gift\n {SI} Tip {$GameState.Resources.Money}{!Icons.Currency}",
+    OverwriteLocalization = true
 	},
 	{
-		Id = "ModsNikkelMCharonsTipJarNPCUseTextTalkAndSpecial",
-		DisplayName = "{I} Talk\n {SI} Tip"
+		Id = "ModsNikkelMCharonsTipJar_NPCUseTextTalkAndSpecial",
+		DisplayName = "{I} Talk\n {SI} Tip {$GameState.Resources.Money}{!Icons.Currency}",
+    OverwriteLocalization = true
 	},
 	{
-		Id = "ModsNikkelMCharonsTipJarNPCUseTextTalkGiftAndSpecial",
-		DisplayName = "{I} Talk\n {G} Gift\n {SI} Tip"
+		Id = "ModsNikkelMCharonsTipJar_NPCUseTextTalkGiftAndSpecial",
+		DisplayName = "{I} Talk\n {G} Gift\n {SI} Tip {$GameState.Resources.Money}{!Icons.Currency}",
+    OverwriteLocalization = true
 	}
 }
 local helpTextFile = rom.path.combine(rom.paths.Content, 'Game/Text/en/HelpText.en.sjson')
