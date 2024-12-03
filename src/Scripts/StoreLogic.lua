@@ -1,7 +1,7 @@
 -- If the currently set up store is the PreBoss store before the final boss of a run, replace the Salute logic with the tipping logic
 
-local originalCharonUnitSetData = game.UnitSetData.NPC_Charon
-local tippingInteractVoicelines = game.UnitSetData.NPC_Charon.NPC_Charon_01.InteractVoiceLines
+local originalCharonUnitSetData = game.DeepCopyTable(game.UnitSetData.NPC_Charon)
+local tippingInteractVoicelines = game.DeepCopyTable(game.UnitSetData.NPC_Charon.NPC_Charon_01.InteractVoiceLines)
 -- These are the "SaluteVoiceLines"
 tippingInteractVoicelines[1] = {
 	{ Cue = "/VO/Melinoe_2358",      Text = "This is for you!" },
