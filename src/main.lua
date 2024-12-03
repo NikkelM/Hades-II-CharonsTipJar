@@ -66,7 +66,6 @@ local function on_ready()
 	if config.enabled == false then return end
 
 	import "Scripts/StoreLogic.lua"
-	import "Scripts/UILogic.lua"
 
 	-- Localization/Text replacements
 	import 'Game/Text/HelpText.en.sjson.lua'
