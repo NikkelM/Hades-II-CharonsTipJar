@@ -6,25 +6,11 @@ local order = {
 
 local newData = {
 	{
-		Id = "ModsNikkelMCharonsTipJar_NPCUseTextSpecial",
-		DisplayName = "{SI} Tip {$GameState.Resources.Money}{!Icons.Currency}",
-    OverwriteLocalization = true
-	},
-	{
-		Id = "ModsNikkelMCharonsTipJar_NPCUseTextGiftAndSpecial",
-		DisplayName = "{G} Gift\n {SI} Tip {$GameState.Resources.Money}{!Icons.Currency}",
-    OverwriteLocalization = true
-	},
-	{
-		Id = "ModsNikkelMCharonsTipJar_NPCUseTextTalkAndSpecial",
-		DisplayName = "{I} Talk\n {SI} Tip {$GameState.Resources.Money}{!Icons.Currency}",
-    OverwriteLocalization = true
-	},
-	{
-		Id = "ModsNikkelMCharonsTipJar_NPCUseTextTalkGiftAndSpecial",
-		DisplayName = "{I} Talk\n {G} Gift\n {SI} Tip {$GameState.Resources.Money}{!Icons.Currency}",
+		Id = "ModsNikkelMCharonsTipJar_TipJarUseText",
+		DisplayName = "{I} Tip {$GameState.Resources.Money}{!Icons.Currency}",
     OverwriteLocalization = true
 	}
+	-- TODO: Text for if no money (greyed out)
 }
 local helpTextFile = rom.path.combine(rom.paths.Content, 'Game/Text/en/HelpText.en.sjson')
 

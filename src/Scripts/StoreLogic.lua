@@ -1,7 +1,8 @@
 -- If the currently set up store is the PreBoss store before the final boss of a run, replace the Salute logic with the tipping logic
 
-local originalCharonUnitSetData = game.DeepCopyTable(game.UnitSetData.NPC_Charon)
-local tippingInteractVoicelines = game.DeepCopyTable(game.UnitSetData.NPC_Charon.NPC_Charon_01.InteractVoiceLines)
+-- TODO: With deepCopyTable, the logic doesn't work (functions and texts are not overwritten)
+local originalCharonUnitSetData = game.UnitSetData.NPC_Charon --game.DeepCopyTable(game.UnitSetData.NPC_Charon)
+local tippingInteractVoicelines = game.UnitSetData.NPC_Charon.NPC_Charon_01.InteractVoiceLines --game.DeepCopyTable(game.UnitSetData.NPC_Charon.NPC_Charon_01.InteractVoiceLines)
 -- These are the "SaluteVoiceLines"
 tippingInteractVoicelines[1] = {
 	{ Cue = "/VO/Melinoe_2358",      Text = "This is for you!" },
@@ -24,8 +25,9 @@ modutil.mod.Path.Wrap("SetupWorldShop", function(base, source, args)
 	game.UnitSetData.NPC_Charon = originalCharonUnitSetData
 
 	-- We need to be in either the Tartarus (I) or Olympus (P) PreBoss shop
+	-- or game.CurrentRun.CurrentRoom.RoomSetName == "F"
 	-- TODO: Once the final overworld region is added, change Olympus to that
-	if (game.CurrentRun.CurrentRoom.RoomSetName == "I" or game.CurrentRun.CurrentRoom.RoomSetName == "P") then
+	if (game.CurrentRun.CurrentRoom.RoomSetName == "I" or game.CurrentRun.CurrentRoom.RoomSetName == "P" or game.CurrentRun.CurrentRoom.RoomSetName == "F") then
 		if string.find(game.CurrentRun.CurrentRoom.Name, "PreBoss") then
 			game.UnitSetData.NPC_Charon.NPC_Charon_01.UseTextSpecial = "ModsNikkelMCharonsTipJar_NPCUseTextSpecial"
 			game.UnitSetData.NPC_Charon.NPC_Charon_01.UseTextTalkGiftAndSpecial =
@@ -44,24 +46,6 @@ modutil.mod.Path.Wrap("SetupWorldShop", function(base, source, args)
 	base(source, args)
 end)
 
--- TODO: If the player has no money when approaching Charon, use the normal salute useText and function name
-function game.ModsNikkelMCharonsTipJarTipCharon(usee, args)
-	local moneyTipped = game.GameState.Resources.Money
-	if moneyTipped == 0 then
-		return
-	end
-
-	-- Remove money
-	game.SpendResources({ Money = moneyTipped }, "ModsNikkelMCharonsTipJarCharonTip")
-	-- Count towards rewards card progress
-	game.HandleCharonPurchase("ModsNikkelMCharonsTipJarTipCharon", moneyTipped)
-	-- Update UI
-	game.UpdateMoneyUI(true)
-	-- Play sound and animation
-	game.ShoppingSuccessItemPresentation(usee)
-	-- Play the normal interact animation, using the custom voicelines defined above
-	game.SpecialInteractSalute(usee, args)
-end
 
 -- Reset the Charon unit set data when entering the Crossroads, to make sure the tipping logic is removed in case he appears
 -- TODO: Test if this is needed

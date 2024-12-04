@@ -65,7 +65,8 @@ local function on_ready()
 	-- what to do when we are ready, but not re-do on reload.
 	if config.enabled == false then return end
 
-	import "Scripts/StoreLogic.lua"
+	-- import "Scripts/StoreLogic.lua"
+	import "Scripts/CharonsTipJar.lua"
 
 	-- Localization/Text replacements
 	import 'Game/Text/HelpText.en.sjson.lua'
