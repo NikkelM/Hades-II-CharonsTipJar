@@ -11,6 +11,7 @@ function mod.SpawnCharonsTipJar()
 	local spawnId = 561301 -- TODO: This is in F_PreBoss -- check others
 	local tipJar = game.DeepCopyTable(game.HubRoomData.Hub_Main.ObstacleData[583652])
 	tipJar.OnUsedFunctionName = _PLUGIN.guid .. '.' .. 'TipCharon'
+	-- TODO: If the player has no money when approaching Charon, use a different useText
 	tipJar.UseText = "ModsNikkelMCharonsTipJar_TipJarUseText"
 	tipJar.ObjectId = SpawnObstacle({
 		Name = "SupplyDropObject",
@@ -27,14 +28,12 @@ function mod.SpawnCharonsTipJar()
 	AddToGroup({ Id = tipJar.ObjectId, Name = "ModsNikkelMCharonsTipJar.TipJar" })
 end
 
-
--- TODO: If the player has no money when approaching Charon, use the normal salute useText and function name
 function mod.TipCharon(usee, args)
-	print(usee.ObjectId)
 	local moneyTipped = game.GameState.Resources.Money
 	if moneyTipped == 0 then
 		return
 	end
+	AddInputBlock({ Name = "MelUsedTipJar" })
 
 	-- Remove money
 	game.SpendResources({ Money = moneyTipped }, "ModsNikkelMCharonsTipJarCharonTip")
@@ -44,6 +43,13 @@ function mod.TipCharon(usee, args)
 	game.UpdateMoneyUI(true)
 	-- Play sound and animation
 	game.ShoppingSuccessItemPresentation(usee)
-	-- Play the normal interact animation, using the custom voicelines defined above
-	game.SpecialInteractSalute(usee, args)
+	-- TODO: Play gift giving animation?
+	-- TODO: Remove useText prompt
+	-- TODO: Close mailbox (replace obstacle with SupplyDropObjectClosed)
+	SetAnimation({ Name = "SupplyDropObjectClosed", DestinationId = usee.ObjectId })
+	UseableOff({ Id = usee.ObjectId })
+
+	-- TODO: Adjust depending on animation length/if needed at all
+	game.wait(1)
+	RemoveInputBlock({ Name = "MelUsedTipJar" })
 end
