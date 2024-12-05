@@ -1,13 +1,24 @@
 local mod = modutil.mod.Mod.Register(_PLUGIN.guid)
 local tippingInteractVoicelines = {
-	{ Cue = "/VO/Melinoe_2358",      Text = "This is for you!" },
-	{ Cue = "/VO/Melinoe_2358_B",    Text = "This is for you!" },
+	{ Cue = "/VO/Melinoe_2358",      Text = "This is for you!" }, -- TODO: GameStateRequirement - Charon is present
+	{ Cue = "/VO/Melinoe_2358_B",    Text = "This is for you!" }, -- TODO: GameStateRequirement - Charon is present
 	{ Cue = "/VO/Melinoe_0187",      Text = "A gift..." },
-	{ Cue = "/VO/Melinoe_2355",      Text = "For you!" },
+	{ Cue = "/VO/Melinoe_2355",      Text = "For you!" },        -- TODO: GameStateRequirement - Charon is present
 	{ Cue = "/VO/Melinoe_3425",      Text = "In service to the realm." },
 	{ Cue = "/VO/Melinoe_0557",      Text = "Here's the Gold." },
+	{ Cue = "/VO/Melinoe_1290",      Text = "Lord Charon will want this." }, -- TODO: GameStateRequirement - Charon is not present
+	{ Cue = "/VO/MelinoeField_1445", Text = "I do have Gold to spare..." },
 	{ Cue = "/VO/MelinoeField_1630", Text = "Who needs Gold anyway..." }
 }
+
+local tippingNoMoneyVoiceLines = {
+	{ Cue = "/VO/Melinoe_1851", Text = "I'll have to get more." },
+	{ Cue = "/VO/Melinoe_1852", Text = "Thought I had more..." },
+	{ Cue = "/VO/Melinoe_1223", Text = "Thought I had more Gold..." },
+	{ Cue = "/VO/Melinoe_1224", Text = "Don't have the Gold for this." }
+}
+
+-- TODO: Charon voicelines thanking for the tip, if he is there himself (not Olympus)
 
 -- Add the function to the shop room events
 table.insert(game.EncounterSets.ShopRoomEvents, {
@@ -82,8 +93,8 @@ function mod.TipCharonNoMoneyPresentation(usee, args)
 	AngleTowardTarget({ Id = game.CurrentRun.Hero.ObjectId, DestinationId = usee.ObjectId })
 	SetAnimation({ Name = "MelTalkBroodingFull01", DestinationId = game.CurrentRun.Hero.ObjectId })
 	PlaySound({ Name = "/Leftovers/World Sounds/CaravanJostle2", Id = usee.ObjectId })
-	-- TODO: Voicelines for no money?
-	-- game.thread( game.PlayVoiceLines, GlobalVoiceLines.WaitingForMailboxItemVoiceLines, true )
+
+	game.thread(game.PlayVoiceLines, tippingNoMoneyVoiceLines, true)
 	game.thread(game.InCombatText, usee.ObjectId, "ModsNikkelMCharonsTipJar_TipJarUseText_NoMoney_FloatText", 2.5)
 	game.wait(2)
 	RemoveInputBlock({ Name = "MelUsedTipJarNoMoney" })
@@ -102,7 +113,7 @@ function TippingPresentation(target)
 
 	game.wait(0.15)
 	-- Play a voiceline
-	game.thread( game.PlayVoiceLines, tippingInteractVoicelines, true )
+	game.thread(game.PlayVoiceLines, tippingInteractVoicelines, true)
 
 	SetAnimation({ Name = "MelTalkGifting01ReturnToIdle", DestinationId = game.CurrentRun.Hero.ObjectId })
 end
