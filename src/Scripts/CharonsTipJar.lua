@@ -15,6 +15,7 @@ function mod.SpawnCharonsTipJar()
 	tipJar.UseText = "ModsNikkelMCharonsTipJar_TipJarUseText"
 	tipJar.ObjectId = SpawnObstacle({
 		Name = "SupplyDropObject",
+		-- TODO: Mailbox is currently always behind Melinoe, should be in front of her model if she is standing behind it
 		Group = "FX_Terrain",
 		DestinationId = spawnId,
 		AttachedTable = tipJar,
@@ -35,21 +36,30 @@ function mod.TipCharon(usee, args)
 	end
 	AddInputBlock({ Name = "MelUsedTipJar" })
 
+	-- Play gift giving animation
+	GiftGivingAnimation(usee)
+
 	-- Remove money
 	game.SpendResources({ Money = moneyTipped }, "ModsNikkelMCharonsTipJarCharonTip")
 	-- Count towards rewards card progress
 	game.HandleCharonPurchase("ModsNikkelMCharonsTipJarTipCharon", moneyTipped)
 	-- Update UI
 	game.UpdateMoneyUI(true)
-	-- Play sound and animation
+	-- Play sound as if buying something
 	game.ShoppingSuccessItemPresentation(usee)
-	-- TODO: Play gift giving animation?
-	-- TODO: Remove useText prompt
-	-- TODO: Close mailbox (replace obstacle with SupplyDropObjectClosed)
+	-- Replace tip jar with closed version, and disable using it
 	SetAnimation({ Name = "SupplyDropObjectClosed", DestinationId = usee.ObjectId })
 	UseableOff({ Id = usee.ObjectId })
 
-	-- TODO: Adjust depending on animation length/if needed at all
-	game.wait(1)
+	game.wait(0.2)
 	RemoveInputBlock({ Name = "MelUsedTipJar" })
+end
+
+function GiftGivingAnimation(usee)
+	AngleTowardTarget({ Id = game.CurrentRun.Hero.ObjectId, DestinationId = usee.ObjectId })
+	SetAnimation({ Name = "MelTalkGifting01", DestinationId = game.CurrentRun.Hero.ObjectId })
+
+	game.wait(0.40)
+	SetAnimation({ Name = "MelTalkGifting01ReturnToIdle", DestinationId = game.CurrentRun.Hero.ObjectId })
+	game.wait(0.65)
 end
