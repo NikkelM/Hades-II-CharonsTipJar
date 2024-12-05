@@ -6,7 +6,7 @@ schemaVersion = "0.0.1"
 namespace = "NikkelM"
 name = "Charons_Tip_Jar"
 versionNumber = "0.0.1"
-description = "Tip Charon with any unspent Obols."
+description = "Tip Charon with any unspent Gold before facing the final boss of a run."
 websiteUrl = "https://github.com/NikkelM/Hades-II-CharonsTipJar"
 containsNsfwContent = false
 

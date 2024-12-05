@@ -86,6 +86,7 @@ table.insert(game.EncounterSets.ShopRoomEvents, {
 -- Spawns the tip jar, if the correct room is entered (I_PreBoss01 for Tartarus or P_PreBoss01 for Olympus) - for debugging, F_PreBoss01 for Erebus
 function mod.SpawnCharonsTipJar(source, args)
 	-- We are not in a shop room before the final boss of the run
+	-- TODO: Remove debug check
 	if source.Name ~= "I_PreBoss01" and source.Name ~= "P_PreBoss01" and source.Name ~= "F_PreBoss01" then
 		return
 	end
@@ -108,29 +109,50 @@ function mod.SpawnCharonsTipJar(source, args)
 	tipJar.ActivateIds = { tipJar.ObjectId }
 
 	-- Overwrite some default values
-	-- TODO: Re-evaluate this whenever the amount of money changes
-	if game.HasResource("Money", 1) then
-		tipJar.UseText = "ModsNikkelMCharonsTipJar_TipJarUseText"
-		tipJar.OnUsedFunctionName = _PLUGIN.guid .. '.' .. 'TipCharonPresentation'
-	else
-		-- TODO: Also remove sparkle effect - would need to copy and remove childanimation from SupplyDropObjectEmpty in Items_General_VFX.sjson
-		tipJar.UseText = "ModsNikkelMCharonsTipJar_TipJarUseText_NoMoney"
-		tipJar.OnUsedFunctionName = _PLUGIN.guid .. '.' .. 'TipCharonNoMoneyPresentation'
-	end
-
 	tipJar.SetupEvents = {}
 	tipJar.InteractDistance = 150
+	-- The normal tipping text is shown as the UseText
+	tipJar.UseText = "ModsNikkelMCharonsTipJar_TipJarUseText"
+	-- If the player has no money, the UseTextTalkAndSpecial is shown instead, which is the greyed out Tip? text
+	-- This is achieved through the "special" only being available when the player has no money
+	-- The special interaction prompt has no actual use, and the normal use function call determines on the fly which of the two functions to call
+	tipJar.UseTextTalkAndSpecial = "ModsNikkelMCharonsTipJar_TipJarUseText_NoMoney"
+	tipJar.SpecialInteractGameStateRequirements = {
+		{
+			Path = { "GameState", "Resources", "Money" },
+			Comparison = "<=",
+			Value = 0
+		}
+	}
+	-- This will choose which of the presentation functions to call, depending on if the player has money at the moment or not
+	tipJar.OnUsedFunctionName = _PLUGIN.guid .. '.' .. 'DetermineAndPlayTippingPresentation'
+	-- This is a dummy function that does nothing, as we don't actually show a "Special" button prompt, so don't want to do anything there
+	tipJar.SpecialInteractFunctionName = _PLUGIN.guid .. '.' .. 'DummyTippingPresentation'
 
 	SetScale({ Id = tipJar.ObjectId, Fraction = 0.2 })
 	game.SetupObstacle(tipJar)
 	AddToGroup({ Id = tipJar.ObjectId, Name = "ModsNikkelMCharonsTipJar.TipJar" })
 end
 
-function mod.TipCharonPresentation(usee, args)
+-- Determines on-the-fly which of the presentation functions to use
+function mod.DetermineAndPlayTippingPresentation(usee, args)
+	if game.HasResource("Money", 1) then
+		TipCharonPresentation(usee, args)
+	else
+		TipCharonNoMoneyPresentation(usee, args)
+	end
+end
+
+-- Does nothing, but cannot be nil
+function mod.DummyTippingPresentation(usee, args)
+	return
+end
+
+function TipCharonPresentation(usee, args)
 	AddInputBlock({ Name = "MelUsedTipJar" })
 	local moneyTipped = game.GameState.Resources.Money
 
-	-- Play animationsn
+	-- Play animations
 	TippingPresentation(usee)
 	-- Remove money
 	game.SpendResources({ Money = moneyTipped }, "ModsNikkelMCharonsTipJarCharonTip")
@@ -141,11 +163,12 @@ function mod.TipCharonPresentation(usee, args)
 	-- Disable using the tip jar (removes input prompt)
 	UseableOff({ Id = usee.ObjectId })
 
-	game.wait(0.5)
+	-- Waits for the animations to finish
+	game.wait(0.8)
 	RemoveInputBlock({ Name = "MelUsedTipJar" })
 end
 
-function mod.TipCharonNoMoneyPresentation(usee, args)
+function TipCharonNoMoneyPresentation(usee, args)
 	UseableOff({ Id = usee.ObjectId })
 	AddInputBlock({ Name = "MelUsedTipJarNoMoney" })
 	AngleTowardTarget({ Id = game.CurrentRun.Hero.ObjectId, DestinationId = usee.ObjectId })
@@ -156,6 +179,7 @@ function mod.TipCharonNoMoneyPresentation(usee, args)
 	game.thread(game.InCombatText, usee.ObjectId, "ModsNikkelMCharonsTipJar_TipJarUseText_NoMoney_FloatText", 2.5)
 	game.wait(2)
 	RemoveInputBlock({ Name = "MelUsedTipJarNoMoney" })
+	UseableOn({ Id = usee.ObjectId })
 end
 
 -- Animations from game.ReceivedGiftPresentation(), without the gifting logic and voicelines
