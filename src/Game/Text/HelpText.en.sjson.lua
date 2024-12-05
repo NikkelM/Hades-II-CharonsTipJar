@@ -14,7 +14,7 @@ local newData = {
 	-- If the player has no money
 	{
 		Id = "ModsNikkelMCharonsTipJar_TipJarUseText_NoMoney",
-		DisplayName = "{I} {#LockedFormat}Tip    {!Icons.Currency}?",
+		DisplayName = "{I} {#LockedFormat}Tip {!Icons.Currency}?",
     OverwriteLocalization = true
 	},
 	-- Floating text overhead if tipping with no money
