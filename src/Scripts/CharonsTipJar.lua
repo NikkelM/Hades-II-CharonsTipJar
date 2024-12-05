@@ -78,7 +78,6 @@ end
 
 function mod.TipCharonNoMoneyPresentation(usee, args)
 	UseableOff({ Id = usee.ObjectId })
-	game.HideUseButton(usee.ObjectId, usee) -- TODO: Needed?
 	AddInputBlock({ Name = "MelUsedTipJarNoMoney" })
 	AngleTowardTarget({ Id = game.CurrentRun.Hero.ObjectId, DestinationId = usee.ObjectId })
 	SetAnimation({ Name = "MelTalkBroodingFull01", DestinationId = game.CurrentRun.Hero.ObjectId })
