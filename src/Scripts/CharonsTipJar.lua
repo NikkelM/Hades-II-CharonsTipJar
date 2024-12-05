@@ -1,27 +1,17 @@
 local mod = modutil.mod.Mod.Register(_PLUGIN.guid)
 
--- For debugging - Erebus
-table.insert(game.RoomSetData.F.F_PreBoss01.StartUnthreadedEvents,
-	{
-		FunctionName = _PLUGIN.guid .. '.' .. 'SpawnCharonsTipJar',
-		Args = { Location = "F_PreBoss01" }
-	})
+-- Add the function to the shop room events
+table.insert(game.EncounterSets.ShopRoomEvents, {
+	FunctionName = _PLUGIN.guid .. '.' .. 'SpawnCharonsTipJar'
+})
 
--- Tartarus
-table.insert(game.RoomSetData.I.I_PreBoss01.StartUnthreadedEvents,
-	{
-		FunctionName = _PLUGIN.guid .. '.' .. 'SpawnCharonsTipJar',
-		Args = { Location = "I_PreBoss01" }
-	})
-
--- Olympus
-table.insert(game.RoomSetData.P.P_PreBoss01.StartUnthreadedEvents,
-	{
-		FunctionName = _PLUGIN.guid .. '.' .. 'SpawnCharonsTipJar',
-		Args = { Location = "P_PreBoss01" }
-	})
-
+-- Spawns the tip jar, if the correct room is entered (I_PreBoss01 for Tartarus or P_PreBoss01 for Olympus) - for debugging, F_PreBoss01 for Erebus
 function mod.SpawnCharonsTipJar(source, args)
+	-- We are not in a shop room before the final boss of the run
+	if source.Name ~= "I_PreBoss01" and source.Name ~= "P_PreBoss01" and source.Name ~= "F_PreBoss01" then
+		return
+	end
+
 	-- game.GameState.Resources.Money = 0
 	-- Defines the starting point for the spawn, against which the offset is applied. This is Charon
 	-- TODO: This is the ID in F_PreBoss01 -- check other rooms
@@ -103,11 +93,11 @@ function GiftGivingAnimation(target)
 
 	game.wait(0.50)
 	SetAnimation({ Name = "MelTalkGifting01ReturnToIdle", DestinationId = game.CurrentRun.Hero.ObjectId })
-	game.wait(0.65)
+	game.wait(0.25)
 end
 
 -- Same as game.ShoppingSuccessItemPresentation() but with a scaled up coin pickup animation (to be more visible with the scaled down mailbox), and no consumeSound
 function ScaledShoppingSuccessItemPresentation(item)
 	PlaySound({ Name = "/Leftovers/Menu Sounds/StoreBuyingItem" })
-	CreateAnimation({ Name = "MoneyDropCoinPickup", DestinationId = item.ObjectId, Scale = 4 })
+	CreateAnimation({ Name = "MoneyDropCoinPickup", DestinationId = item.ObjectId, Scale = 4, OffsetY = -40 })
 end
