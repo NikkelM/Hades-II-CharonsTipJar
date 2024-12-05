@@ -1,4 +1,13 @@
 local mod = modutil.mod.Mod.Register(_PLUGIN.guid)
+local tippingInteractVoicelines = {
+	{ Cue = "/VO/Melinoe_2358",      Text = "This is for you!" },
+	{ Cue = "/VO/Melinoe_2358_B",    Text = "This is for you!" },
+	{ Cue = "/VO/Melinoe_0187",      Text = "A gift..." },
+	{ Cue = "/VO/Melinoe_2355",      Text = "For you!" },
+	{ Cue = "/VO/Melinoe_3425",      Text = "In service to the realm." },
+	{ Cue = "/VO/Melinoe_0557",      Text = "Here's the Gold." },
+	{ Cue = "/VO/MelinoeField_1630", Text = "Who needs Gold anyway..." }
+}
 
 -- Add the function to the shop room events
 table.insert(game.EncounterSets.ShopRoomEvents, {
@@ -30,8 +39,7 @@ function mod.SpawnCharonsTipJar(source, args)
 	tipJar.ActivateIds = { tipJar.ObjectId }
 
 	-- Overwrite some default values
-	-- TODO: Re-evaluate this whenever the amount of money changes - Check HasResource("Money", 1)
-	-- local playerMoney = game.GameState.Resources.Money
+	-- TODO: Re-evaluate this whenever the amount of money changes
 	if game.HasResource("Money", 1) then
 		tipJar.UseText = "ModsNikkelMCharonsTipJar_TipJarUseText"
 		tipJar.OnUsedFunctionName = _PLUGIN.guid .. '.' .. 'TipCharonPresentation'
@@ -53,22 +61,18 @@ function mod.TipCharonPresentation(usee, args)
 	AddInputBlock({ Name = "MelUsedTipJar" })
 	local moneyTipped = game.GameState.Resources.Money
 
-	-- Play gift giving animation
-	GiftGivingAnimation(usee)
+	-- Play animationsn
+	TippingPresentation(usee)
 	-- Remove money
 	game.SpendResources({ Money = moneyTipped }, "ModsNikkelMCharonsTipJarCharonTip")
 	-- Count towards rewards card progress
 	game.HandleCharonPurchase("ModsNikkelMCharonsTipJarTipCharon", moneyTipped)
 	-- Update the amount of money shown to the player
 	game.UpdateMoneyUI(true)
-	-- Play sound and animation as if buying something
-	ScaledShoppingSuccessItemPresentation(usee)
-	-- Replace tip jar with closed version
-	SetAnimation({ Name = "SupplyDropObjectClosed", DestinationId = usee.ObjectId })
 	-- Disable using the tip jar (removes input prompt)
 	UseableOff({ Id = usee.ObjectId })
 
-	game.wait(0.3)
+	game.wait(0.5)
 	RemoveInputBlock({ Name = "MelUsedTipJar" })
 end
 
@@ -87,13 +91,21 @@ function mod.TipCharonNoMoneyPresentation(usee, args)
 end
 
 -- Animations from game.ReceivedGiftPresentation(), without the gifting logic and voicelines
-function GiftGivingAnimation(target)
+function TippingPresentation(target)
 	AngleTowardTarget({ Id = game.CurrentRun.Hero.ObjectId, DestinationId = target.ObjectId })
 	SetAnimation({ Name = "MelTalkGifting01", DestinationId = game.CurrentRun.Hero.ObjectId })
 
-	game.wait(0.50)
+	game.wait(0.35)
+	-- Play sound and money VFX as if buying something
+	ScaledShoppingSuccessItemPresentation(target)
+	-- Replace tip jar with closed version
+	SetAnimation({ Name = "SupplyDropObjectClosed", DestinationId = target.ObjectId })
+
+	game.wait(0.15)
+	-- Play a voiceline
+	game.thread( game.PlayVoiceLines, tippingInteractVoicelines, true )
+
 	SetAnimation({ Name = "MelTalkGifting01ReturnToIdle", DestinationId = game.CurrentRun.Hero.ObjectId })
-	game.wait(0.25)
 end
 
 -- Same as game.ShoppingSuccessItemPresentation() but with a scaled up coin pickup animation (to be more visible with the scaled down mailbox), and no consumeSound
