@@ -1,17 +1,75 @@
 local mod = modutil.mod.Mod.Register(_PLUGIN.guid)
 local tippingInteractVoicelines = {
-	{ Cue = "/VO/Melinoe_2358",      Text = "This is for you!" }, -- TODO: GameStateRequirement - Charon is present
-	{ Cue = "/VO/Melinoe_2358_B",    Text = "This is for you!" }, -- TODO: GameStateRequirement - Charon is present
+	RandomRemaining = true,
+	-- Charon must be present
+	{
+		Cue = "/VO/Melinoe_2358",
+		Text = "This is for you!",
+		GameStateRequirements =
+		{
+			{
+				Path = { "CurrentRun", "CurrentRoom", "Name" },
+				IsAny = { "F_PreBoss01" }
+			}
+		}
+	},
+	-- Charon must be present
+	{
+		Cue = "/VO/Melinoe_2358_B",
+		Text = "This is for you!",
+		GameStateRequirements =
+		{
+			{
+				Path = { "CurrentRun", "CurrentRoom", "Name" },
+				IsAny = { "F_PreBoss01" }
+			}
+		}
+	},
+	-- Charon must be present
+	{
+		Cue = "/VO/Melinoe_2355",
+		Text = "For you!",
+		GameStateRequirements =
+		{
+			{
+				Path = { "CurrentRun", "CurrentRoom", "Name" },
+				IsAny = { "F_PreBoss01" }
+			}
+		}
+	},
+	-- Charon must be present
+	{
+		Cue = "/VO/Melinoe_0557",
+		Text = "Here's the Gold.",
+		GameStateRequirements =
+		{
+			{
+				Path = { "CurrentRun", "CurrentRoom", "Name" },
+				IsAny = { "F_PreBoss01" }
+			}
+		}
+	},
+	-- Charon must *not* be present
+	{
+		Cue = "/VO/Melinoe_1290",
+		Text = "Lord Charon will want this.",
+		GameStateRequirements =
+		{
+			{
+				Path = { "CurrentRun", "CurrentRoom", "Name" },
+				IsAny = { "P_PreBoss01" }
+			}
+		}
+	},
+	-- Anything works
 	{ Cue = "/VO/Melinoe_0187",      Text = "A gift..." },
-	{ Cue = "/VO/Melinoe_2355",      Text = "For you!" },        -- TODO: GameStateRequirement - Charon is present
 	{ Cue = "/VO/Melinoe_3425",      Text = "In service to the realm." },
-	{ Cue = "/VO/Melinoe_0557",      Text = "Here's the Gold." },
-	{ Cue = "/VO/Melinoe_1290",      Text = "Lord Charon will want this." }, -- TODO: GameStateRequirement - Charon is not present
 	{ Cue = "/VO/MelinoeField_1445", Text = "I do have Gold to spare..." },
 	{ Cue = "/VO/MelinoeField_1630", Text = "Who needs Gold anyway..." }
 }
 
 local tippingNoMoneyVoiceLines = {
+	RandomRemaining = true,
 	{ Cue = "/VO/Melinoe_1851", Text = "I'll have to get more." },
 	{ Cue = "/VO/Melinoe_1852", Text = "Thought I had more..." },
 	{ Cue = "/VO/Melinoe_1223", Text = "Thought I had more Gold..." },
@@ -20,7 +78,7 @@ local tippingNoMoneyVoiceLines = {
 
 -- TODO: Charon voicelines thanking for the tip, if he is there himself (not Olympus)
 
--- Add the function to the shop room events
+-- Add the setup function to the shop room setup events list
 table.insert(game.EncounterSets.ShopRoomEvents, {
 	FunctionName = _PLUGIN.guid .. '.' .. 'SpawnCharonsTipJar'
 })
