@@ -1,6 +1,12 @@
 local mod = modutil.mod.Mod.Register(_PLUGIN.guid)
 local tippingInteractVoicelines = {
+	BreakIfPlayed = true,
 	RandomRemaining = true,
+	PreLineWait = 0.25,
+	Cooldowns =
+	{
+		{ Name = "MelinoeAnyQuipSpeech" },
+	},
 	-- Charon must be present (Erebus, Tartarus)
 	{
 		Cue = "/VO/Melinoe_2358",
@@ -66,7 +72,13 @@ local tippingInteractVoicelines = {
 }
 
 local tippingNoMoneyVoiceLines = {
+	BreakIfPlayed = true,
 	RandomRemaining = true,
+	PreLineWait = 0.25,
+	Cooldowns =
+	{
+		{ Name = "MelinoeAnyQuipSpeech" },
+	},
 	{ Cue = "/VO/Melinoe_1851", Text = "I'll have to get more." },
 	{ Cue = "/VO/Melinoe_1852", Text = "Thought I had more..." },
 	{ Cue = "/VO/Melinoe_1223", Text = "Thought I had more Gold..." },
@@ -88,7 +100,7 @@ function mod.SpawnCharonsTipJar(source, args)
 		return
 	end
 
-	-- game.GameState.Resources.Money = 0
+	game.GameState.Resources.Money = 0
 	-- Defines the starting point for the spawn, against which the offset is applied. This is the Charon NPC
 	-- Can get the Object Id by printing the npc argument in game.UseNPC
 	-- F_PreBoss01: 561301
