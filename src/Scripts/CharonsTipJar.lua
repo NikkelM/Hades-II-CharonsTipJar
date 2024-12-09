@@ -1,7 +1,7 @@
 local mod = modutil.mod.Mod.Register(_PLUGIN.guid)
 local tippingInteractVoicelines = {
 	RandomRemaining = true,
-	-- Charon must be present
+	-- Charon must be present (Erebus, Tartarus)
 	{
 		Cue = "/VO/Melinoe_2358",
 		Text = "This is for you!",
@@ -9,11 +9,10 @@ local tippingInteractVoicelines = {
 		{
 			{
 				Path = { "CurrentRun", "CurrentRoom", "Name" },
-				IsAny = { "F_PreBoss01" }
+				IsAny = { "F_PreBoss01", "I_PreBoss01" }
 			}
 		}
 	},
-	-- Charon must be present
 	{
 		Cue = "/VO/Melinoe_2358_B",
 		Text = "This is for you!",
@@ -21,11 +20,10 @@ local tippingInteractVoicelines = {
 		{
 			{
 				Path = { "CurrentRun", "CurrentRoom", "Name" },
-				IsAny = { "F_PreBoss01" }
+				IsAny = { "F_PreBoss01", "I_PreBoss01" }
 			}
 		}
 	},
-	-- Charon must be present
 	{
 		Cue = "/VO/Melinoe_2355",
 		Text = "For you!",
@@ -33,11 +31,10 @@ local tippingInteractVoicelines = {
 		{
 			{
 				Path = { "CurrentRun", "CurrentRoom", "Name" },
-				IsAny = { "F_PreBoss01" }
+				IsAny = { "F_PreBoss01", "I_PreBoss01" }
 			}
 		}
 	},
-	-- Charon must be present
 	{
 		Cue = "/VO/Melinoe_0557",
 		Text = "Here's the Gold.",
@@ -45,11 +42,11 @@ local tippingInteractVoicelines = {
 		{
 			{
 				Path = { "CurrentRun", "CurrentRoom", "Name" },
-				IsAny = { "F_PreBoss01" }
+				IsAny = { "F_PreBoss01", "I_PreBoss01" }
 			}
 		}
 	},
-	-- Charon must *not* be present
+	-- Charon must *not* be present (Olympus)
 	{
 		Cue = "/VO/Melinoe_1290",
 		Text = "Lord Charon will want this.",
@@ -85,16 +82,34 @@ table.insert(game.EncounterSets.ShopRoomEvents, {
 
 -- Spawns the tip jar, if the correct room is entered (I_PreBoss01 for Tartarus or P_PreBoss01 for Olympus) - for debugging, F_PreBoss01 for Erebus
 function mod.SpawnCharonsTipJar(source, args)
-	-- We are not in a shop room before the final boss of the run
-	-- TODO: Remove debug check
-	if source.Name ~= "I_PreBoss01" and source.Name ~= "P_PreBoss01" and source.Name ~= "F_PreBoss01" then
+	-- We only spawn the tip jar in a shop room before the final boss of the run
+	-- For debugging in Erebus:			and source.Name ~= "F_PreBoss01"
+	if source.Name ~= "I_PreBoss01" and source.Name ~= "P_PreBoss01" then
 		return
 	end
 
 	-- game.GameState.Resources.Money = 0
-	-- Defines the starting point for the spawn, against which the offset is applied. This is Charon
-	-- TODO: This is the ID in F_PreBoss01 -- check other rooms
-	local spawnId = 561301
+	-- Defines the starting point for the spawn, against which the offset is applied. This is the Charon NPC
+	-- Can get the Object Id by printing the npc argument in game.UseNPC
+	-- F_PreBoss01: 561301
+	-- I_PreBoss01: 619941
+	local spawnId = nil
+
+	local flipHorizontal = false
+	local offsetX, offsetY = 0
+
+	if source.Name == "I_PreBoss01" then
+		spawnId = 619941
+		offsetY = 350
+		flipHorizontal = true
+	elseif source.Name == "P_PreBoss01" then
+		-- TODO:
+		spawnId = nil
+	elseif source.Name == "F_PreBoss01" then
+		spawnId = 561301
+		offsetX = 0
+		offsetY = 300
+	end
 	-- Copies the mailbox item
 	local tipJar = game.DeepCopyTable(game.HubRoomData.Hub_Main.ObstacleData[583652])
 
@@ -103,14 +118,20 @@ function mod.SpawnCharonsTipJar(source, args)
 		Group = "Standing",
 		DestinationId = spawnId,
 		AttachedTable = tipJar,
-		OffsetX = 0,
-		OffsetY = 300,
+		OffsetX = offsetX,
+		OffsetY = offsetY,
 	})
 	tipJar.ActivateIds = { tipJar.ObjectId }
+
+	if flipHorizontal then
+		FlipHorizontal({ Id = tipJar.ObjectId })
+	end
 
 	-- Overwrite some default values
 	tipJar.SetupEvents = {}
 	tipJar.InteractDistance = 150
+
+	-- TODO: Third option (gifting = true?) for when the player has already tipped in this room
 	-- The normal tipping text is shown as the UseText
 	tipJar.UseText = "ModsNikkelMCharonsTipJar_TipJarUseText"
 	-- If the player has no money, the UseTextTalkAndSpecial is shown instead, which is the greyed out Tip? text
@@ -129,7 +150,7 @@ function mod.SpawnCharonsTipJar(source, args)
 	-- This is a dummy function that does nothing, as we don't actually show a "Special" button prompt, so don't want to do anything there
 	tipJar.SpecialInteractFunctionName = _PLUGIN.guid .. '.' .. 'DummyTippingPresentation'
 
-	SetScale({ Id = tipJar.ObjectId, Fraction = 0.2 })
+	SetScale({ Id = tipJar.ObjectId, Fraction = 0.25 })
 	game.SetupObstacle(tipJar)
 	AddToGroup({ Id = tipJar.ObjectId, Name = "ModsNikkelMCharonsTipJar.TipJar" })
 end
@@ -200,7 +221,7 @@ function TippingPresentation(target)
 	SetAnimation({ Name = "MelTalkGifting01ReturnToIdle", DestinationId = game.CurrentRun.Hero.ObjectId })
 end
 
--- Same as game.ShoppingSuccessItemPresentation() but with a scaled up coin pickup animation (to be more visible with the scaled down mailbox), and no consumeSound
+-- Same as game.ShoppingSuccessItemPresentation() but with a scaled up coin pickup animation (to be more visible with the scaled mailbox), and no consumeSound
 function ScaledShoppingSuccessItemPresentation(item)
 	PlaySound({ Name = "/Leftovers/Menu Sounds/StoreBuyingItem" })
 	CreateAnimation({ Name = "MoneyDropCoinPickup", DestinationId = item.ObjectId, Scale = 4, OffsetY = -40 })
