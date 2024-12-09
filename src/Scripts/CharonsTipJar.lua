@@ -92,15 +92,17 @@ table.insert(game.EncounterSets.ShopRoomEvents, {
 	FunctionName = _PLUGIN.guid .. '.' .. 'SpawnCharonsTipJar'
 })
 
--- Spawns the tip jar, if the correct room is entered (I_PreBoss01 for Tartarus or P_PreBoss01 for Olympus) - for debugging, F_PreBoss01 for Erebus
+-- Spawns the tip jar, if the correct room is entered (I_PreBoss01 for Tartarus or P_PreBoss01 for Olympus) - for testing, F_PreBoss01 for Erebus
 function mod.SpawnCharonsTipJar(source, args)
 	-- We only spawn the tip jar in a shop room before the final boss of the run
-	-- For debugging in Erebus:			and source.Name ~= "F_PreBoss01"
+	-- For testing in Erebus:				and source.Name ~= "F_PreBoss01"
 	if source.Name ~= "I_PreBoss01" and source.Name ~= "P_PreBoss01" then
 		return
 	end
 
-	game.GameState.Resources.Money = 100
+	-- For testing
+	-- game.GameState.Resources.Money = 100
+
 	-- Defines the starting point for the spawn, against which the offset is applied. This is the Charon NPC
 	-- Can get the Object Id by printing the npc argument in game.UseNPC
 	-- F_PreBoss01: 561301
@@ -120,7 +122,7 @@ function mod.SpawnCharonsTipJar(source, args)
 		offsetX = -120
 		offsetY = 80
 		flipHorizontal = true
-		-- For debugging, not properly placed
+	-- For testing, not properly placed
 	-- elseif source.Name == "F_PreBoss01" then
 	-- 	spawnId = 561301
 	-- 	offsetX = 0
