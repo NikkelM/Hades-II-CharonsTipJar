@@ -100,11 +100,12 @@ function mod.SpawnCharonsTipJar(source, args)
 		return
 	end
 
-	game.GameState.Resources.Money = 0
+	game.GameState.Resources.Money = 100
 	-- Defines the starting point for the spawn, against which the offset is applied. This is the Charon NPC
 	-- Can get the Object Id by printing the npc argument in game.UseNPC
 	-- F_PreBoss01: 561301
 	-- I_PreBoss01: 619941
+	-- P_PreBoss01: 744832 -- Scarecrow obstacle, not an NPC
 	local spawnId = nil
 
 	local flipHorizontal = false
@@ -115,13 +116,17 @@ function mod.SpawnCharonsTipJar(source, args)
 		offsetY = 350
 		flipHorizontal = true
 	elseif source.Name == "P_PreBoss01" then
-		-- TODO:
-		spawnId = nil
-	elseif source.Name == "F_PreBoss01" then
-		spawnId = 561301
-		offsetX = 0
-		offsetY = 300
+		spawnId = 744832
+		offsetX = -120
+		offsetY = 80
+		flipHorizontal = true
+		-- For debugging, not properly placed
+	-- elseif source.Name == "F_PreBoss01" then
+	-- 	spawnId = 561301
+	-- 	offsetX = 0
+	-- 	offsetY = 300
 	end
+
 	-- Copies the mailbox item
 	local tipJar = game.DeepCopyTable(game.HubRoomData.Hub_Main.ObstacleData[583652])
 
