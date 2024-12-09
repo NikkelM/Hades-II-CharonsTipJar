@@ -1,74 +1,90 @@
 local mod = modutil.mod.Mod.Register(_PLUGIN.guid)
+
+-- Charon voicelines thanking for the tip, if he is there himself. Same as purchase responses
+local postTippingCharonVoicelines = game.DeepCopyTable(game.GlobalVoiceLines.PurchasedConsumableVoiceLines[2])
+-- Charon must be present for this to play
+postTippingCharonVoicelines.GameStateRequirements = {
+	{
+		Path = { "CurrentRun", "CurrentRoom", "Name" },
+		IsAny = { "F_PreBoss01", "I_PreBoss01" }
+	}
+}
+postTippingCharonVoicelines.ChanceToPlay = 1
+
 local tippingInteractVoicelines = {
-	BreakIfPlayed = true,
-	RandomRemaining = true,
-	PreLineWait = 0.25,
-	Cooldowns =
 	{
-		{ Name = "MelinoeAnyQuipSpeech" },
-	},
-	-- Charon must be present (Erebus, Tartarus)
-	{
-		Cue = "/VO/Melinoe_2358",
-		Text = "This is for you!",
-		GameStateRequirements =
+		-- DO NOT set BreakIfPlayed to true, as this will cause playing the next set of voicelines (Charon thanking) to be skipped
+		-- BreakIfPlayed = true,
+		RandomRemaining = true,
+		PreLineWait = 0.25,
+		Cooldowns =
 		{
-			{
-				Path = { "CurrentRun", "CurrentRoom", "Name" },
-				IsAny = { "F_PreBoss01", "I_PreBoss01" }
-			}
-		}
-	},
-	{
-		Cue = "/VO/Melinoe_2358_B",
-		Text = "This is for you!",
-		GameStateRequirements =
+			{ Name = "MelinoeAnyQuipSpeech" },
+		},
+		-- Charon must be present (Erebus, Tartarus)
 		{
+			Cue = "/VO/Melinoe_2358",
+			Text = "This is for you!",
+			GameStateRequirements =
 			{
-				Path = { "CurrentRun", "CurrentRoom", "Name" },
-				IsAny = { "F_PreBoss01", "I_PreBoss01" }
+				{
+					Path = { "CurrentRun", "CurrentRoom", "Name" },
+					IsAny = { "F_PreBoss01", "I_PreBoss01" }
+				}
 			}
-		}
-	},
-	{
-		Cue = "/VO/Melinoe_2355",
-		Text = "For you!",
-		GameStateRequirements =
+		},
 		{
+			Cue = "/VO/Melinoe_2358_B",
+			Text = "This is for you!",
+			GameStateRequirements =
 			{
-				Path = { "CurrentRun", "CurrentRoom", "Name" },
-				IsAny = { "F_PreBoss01", "I_PreBoss01" }
+				{
+					Path = { "CurrentRun", "CurrentRoom", "Name" },
+					IsAny = { "F_PreBoss01", "I_PreBoss01" }
+				}
 			}
-		}
-	},
-	{
-		Cue = "/VO/Melinoe_0557",
-		Text = "Here's the Gold.",
-		GameStateRequirements =
+		},
 		{
+			Cue = "/VO/Melinoe_2355",
+			Text = "For you!",
+			GameStateRequirements =
 			{
-				Path = { "CurrentRun", "CurrentRoom", "Name" },
-				IsAny = { "F_PreBoss01", "I_PreBoss01" }
+				{
+					Path = { "CurrentRun", "CurrentRoom", "Name" },
+					IsAny = { "F_PreBoss01", "I_PreBoss01" }
+				}
 			}
-		}
-	},
-	-- Charon must *not* be present (Olympus)
-	{
-		Cue = "/VO/Melinoe_1290",
-		Text = "Lord Charon will want this.",
-		GameStateRequirements =
+		},
 		{
+			Cue = "/VO/Melinoe_0557",
+			Text = "Here's the Gold.",
+			GameStateRequirements =
 			{
-				Path = { "CurrentRun", "CurrentRoom", "Name" },
-				IsAny = { "P_PreBoss01" }
+				{
+					Path = { "CurrentRun", "CurrentRoom", "Name" },
+					IsAny = { "F_PreBoss01", "I_PreBoss01" }
+				}
 			}
-		}
+		},
+		-- Charon must *not* be present (Olympus)
+		{
+			Cue = "/VO/Melinoe_1290",
+			Text = "Lord Charon will want this.",
+			GameStateRequirements =
+			{
+				{
+					Path = { "CurrentRun", "CurrentRoom", "Name" },
+					IsAny = { "P_PreBoss01" }
+				}
+			}
+		},
+		-- Anything works
+		{ Cue = "/VO/Melinoe_0187",      Text = "A gift..." },
+		{ Cue = "/VO/Melinoe_3425",      Text = "In service to the realm." },
+		{ Cue = "/VO/MelinoeField_1445", Text = "I do have Gold to spare..." },
+		{ Cue = "/VO/MelinoeField_1630", Text = "Who needs Gold anyway..." }
 	},
-	-- Anything works
-	{ Cue = "/VO/Melinoe_0187",      Text = "A gift..." },
-	{ Cue = "/VO/Melinoe_3425",      Text = "In service to the realm." },
-	{ Cue = "/VO/MelinoeField_1445", Text = "I do have Gold to spare..." },
-	{ Cue = "/VO/MelinoeField_1630", Text = "Who needs Gold anyway..." }
+	postTippingCharonVoicelines
 }
 
 local tippingNoMoneyVoiceLines = {
@@ -85,8 +101,6 @@ local tippingNoMoneyVoiceLines = {
 	{ Cue = "/VO/Melinoe_1224", Text = "Don't have the Gold for this." }
 }
 
--- TODO: Charon voicelines thanking for the tip, if he is there himself (not Olympus)
-
 -- Add the setup function to the shop room setup events list
 table.insert(game.EncounterSets.ShopRoomEvents, {
 	FunctionName = _PLUGIN.guid .. '.' .. 'SpawnCharonsTipJar'
@@ -101,7 +115,7 @@ function mod.SpawnCharonsTipJar(source, args)
 	end
 
 	-- For testing
-	-- game.GameState.Resources.Money = 100
+	-- game.GameState.Resources.Money = 1000
 
 	-- Defines the starting point for the spawn, against which the offset is applied. This is the Charon NPC
 	-- Can get the Object Id by printing the npc argument in game.UseNPC
@@ -192,7 +206,7 @@ function TipCharonPresentation(usee, args)
 	AddInputBlock({ Name = "MelUsedTipJar" })
 	local moneyTipped = game.GameState.Resources.Money
 
-	-- Play animations
+	-- Play animations & voicelines
 	TippingPresentation(usee)
 	-- Remove money
 	game.SpendResources({ Money = moneyTipped }, "ModsNikkelMCharonsTipJarCharonTip")
