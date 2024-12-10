@@ -88,7 +88,6 @@ local tippingInteractVoicelines = {
 }
 
 local tippingNoMoneyVoiceLines = {
-	BreakIfPlayed = true,
 	RandomRemaining = true,
 	PreLineWait = 0.25,
 	Cooldowns =
@@ -99,6 +98,17 @@ local tippingNoMoneyVoiceLines = {
 	{ Cue = "/VO/Melinoe_1852", Text = "Thought I had more..." },
 	{ Cue = "/VO/Melinoe_1223", Text = "Thought I had more Gold..." },
 	{ Cue = "/VO/Melinoe_1224", Text = "Don't have the Gold for this." }
+}
+
+local tippingAlreadyTippedVoiceLines = {
+	RandomRemaining = true,
+	PreLineWait = 0.25,
+	Cooldowns =
+	{
+		{ Name = "MelinoeAnyQuipSpeech" },
+	},
+	{ Cue = "/VO/Melinoe_3084", Text = "No use." },
+	{ Cue = "/VO/Melinoe_2386", Text = "Can't do it." }
 }
 
 -- Add the setup function to the shop room setup events list
@@ -193,11 +203,13 @@ function mod.DetermineAndPlayTippingPresentation(usee, args)
 	args = args or {}
 	if game.CurrentRun.ModsNikkelMCharonsTipJarCharonTipped then
 		args.FloatText = "ModsNikkelMCharonsTipJar_TipJarUseText_AlreadyTipped_FloatText"
+		args.MelinoeVoiceLines = tippingAlreadyTippedVoiceLines
 		TipCharonLockedPresentation(usee, args)
 	elseif game.HasResource("Money", 1) then
 		TipCharonPresentation(usee, args)
 	else
 		args.FloatText = "ModsNikkelMCharonsTipJar_TipJarUseText_NoMoney_FloatText"
+		args.MelinoeVoiceLines = tippingNoMoneyVoiceLines
 		TipCharonLockedPresentation(usee, args)
 	end
 end
@@ -237,8 +249,9 @@ function TipCharonLockedPresentation(usee, args)
 	SetAnimation({ Name = "MelTalkBroodingFull01", DestinationId = game.CurrentRun.Hero.ObjectId })
 	PlaySound({ Name = "/Leftovers/World Sounds/CaravanJostle2", Id = usee.ObjectId })
 
-	game.thread(game.PlayVoiceLines, tippingNoMoneyVoiceLines, true)
+	game.thread(game.PlayVoiceLines, args.MelinoeVoiceLines, true)
 	game.thread(game.InCombatText, usee.ObjectId, args.FloatText, 2.5)
+
 	game.wait(2)
 	RemoveInputBlock({ Name = "MelUsedTipJarNoMoney" })
 	UseableOn({ Id = usee.ObjectId })
