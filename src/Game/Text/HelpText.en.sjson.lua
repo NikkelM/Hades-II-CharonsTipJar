@@ -26,8 +26,7 @@ local newData = {
 	-- Floating text overhead if already tipped
 	{
 		Id = "ModsNikkelMCharonsTipJar_TipJarUseText_AlreadyTipped_FloatText",
-		-- TODO: Charon name formatting
-		DisplayName = "Already tipped Charon!",
+		DisplayName = "Already tipped {!Icons.Currency} {#CombatTextHighlightFormat}{$Keywords.CharCharon} {#Prev}!",
     OverwriteLocalization = true
 	}
 }
