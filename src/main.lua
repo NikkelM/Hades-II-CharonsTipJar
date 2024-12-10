@@ -39,41 +39,41 @@ config = chalk.auto 'config.lua'
 public.config = config -- so other mods can access our config
 
 -- For debugging
-function game.printTable(t, indent)
-	if type(t) ~= "table" then
-		print(t)
-		return
-	end
+-- function game.printTable(t, indent)
+-- 	if type(t) ~= "table" then
+-- 		print(t)
+-- 		return
+-- 	end
 
-	indent = indent or 0
-	local formatting = string.rep("  ", indent)
-	for k, v in pairs(t) do
-		if type(v) == "table" then
-			print(formatting .. k .. ":")
-			game.printTable(v, indent + 1)
-		else
-			print(formatting .. k .. ": " .. tostring(v))
-		end
-	end
-end
+-- 	indent = indent or 0
+-- 	local formatting = string.rep("  ", indent)
+-- 	for k, v in pairs(t) do
+-- 		if type(v) == "table" then
+-- 			print(formatting .. k .. ":")
+-- 			game.printTable(v, indent + 1)
+-- 		else
+-- 			print(formatting .. k .. ": " .. tostring(v))
+-- 		end
+-- 	end
+-- end
 
-function printTable(t, indent)
-	if type(t) ~= "table" then
-		print(t)
-		return
-	end
+-- function printTable(t, indent)
+-- 	if type(t) ~= "table" then
+-- 		print(t)
+-- 		return
+-- 	end
 
-	indent = indent or 0
-	local formatting = string.rep("  ", indent)
-	for k, v in pairs(t) do
-		if type(v) == "table" then
-			print(formatting .. k .. ":")
-			game.printTable(v, indent + 1)
-		else
-			print(formatting .. k .. ": " .. tostring(v))
-		end
-	end
-end
+-- 	indent = indent or 0
+-- 	local formatting = string.rep("  ", indent)
+-- 	for k, v in pairs(t) do
+-- 		if type(v) == "table" then
+-- 			print(formatting .. k .. ":")
+-- 			game.printTable(v, indent + 1)
+-- 		else
+-- 			print(formatting .. k .. ": " .. tostring(v))
+-- 		end
+-- 	end
+-- end
 
 local function on_ready()
 	-- what to do when we are ready, but not re-do on reload.
