@@ -13,8 +13,8 @@ postTippingCharonVoicelines.ChanceToPlay = 1
 
 local tippingInteractVoicelines = {
 	{
-		-- DO NOT set BreakIfPlayed to true, as this will cause playing the next set of voicelines (Charon thanking) to be skipped
-		-- BreakIfPlayed = true,
+		-- DO NOT set BreakIfPlayed to true, as this will cause the next set of voicelines (Charon thanking) to be skipped
+		-- BreakIfPlayed = false,
 		RandomRemaining = true,
 		PreLineWait = 0.25,
 		Cooldowns =
@@ -136,11 +136,11 @@ function mod.SpawnCharonsTipJar(source, args)
 		offsetX = -120
 		offsetY = 80
 		flipHorizontal = true
-	-- For testing, not properly placed
-	-- elseif source.Name == "F_PreBoss01" then
-	-- 	spawnId = 561301
-	-- 	offsetX = 0
-	-- 	offsetY = 300
+		-- For testing, not properly placed
+		-- elseif source.Name == "F_PreBoss01" then
+		-- 	spawnId = 561301
+		-- 	offsetX = 0
+		-- 	offsetY = 300
 	end
 
 	-- Copies the mailbox item
@@ -164,13 +164,13 @@ function mod.SpawnCharonsTipJar(source, args)
 	tipJar.SetupEvents = {}
 	tipJar.InteractDistance = 150
 
-	-- TODO: Third option (gifting = true?) for when the player has already tipped in this room
 	-- The normal tipping text is shown as the UseText
 	tipJar.UseText = "ModsNikkelMCharonsTipJar_TipJarUseText"
 	-- If the player has no money, the UseTextTalkAndSpecial is shown instead, which is the greyed out Tip? text
 	-- This is achieved through the "special" only being available when the player has no money
 	-- The special interaction prompt has no actual use, and the normal use function call determines on the fly which of the two functions to call
 	tipJar.UseTextTalkAndSpecial = "ModsNikkelMCharonsTipJar_TipJarUseText_NoMoney"
+
 	tipJar.SpecialInteractGameStateRequirements = {
 		{
 			Path = { "GameState", "Resources", "Money" },
@@ -190,10 +190,15 @@ end
 
 -- Determines on-the-fly which of the presentation functions to use
 function mod.DetermineAndPlayTippingPresentation(usee, args)
-	if game.HasResource("Money", 1) then
+	args = args or {}
+	if game.CurrentRun.ModsNikkelMCharonsTipJarCharonTipped then
+		args.FloatText = "ModsNikkelMCharonsTipJar_TipJarUseText_AlreadyTipped_FloatText"
+		TipCharonLockedPresentation(usee, args)
+	elseif game.HasResource("Money", 1) then
 		TipCharonPresentation(usee, args)
 	else
-		TipCharonNoMoneyPresentation(usee, args)
+		args.FloatText = "ModsNikkelMCharonsTipJar_TipJarUseText_NoMoney_FloatText"
+		TipCharonLockedPresentation(usee, args)
 	end
 end
 
@@ -204,6 +209,10 @@ end
 
 function TipCharonPresentation(usee, args)
 	AddInputBlock({ Name = "MelUsedTipJar" })
+	-- Disable using the tip jar (removes input prompt)
+	UseableOff({ Id = usee.ObjectId })
+
+	game.CurrentRun.ModsNikkelMCharonsTipJarCharonTipped = true
 	local moneyTipped = game.GameState.Resources.Money
 
 	-- Play animations & voicelines
@@ -214,15 +223,14 @@ function TipCharonPresentation(usee, args)
 	game.HandleCharonPurchase("ModsNikkelMCharonsTipJarTipCharon", moneyTipped)
 	-- Update the amount of money shown to the player
 	game.UpdateMoneyUI(true)
-	-- Disable using the tip jar (removes input prompt)
-	UseableOff({ Id = usee.ObjectId })
 
 	-- Waits for the animations to finish
 	game.wait(0.8)
+	UseableOn({ Id = usee.ObjectId })
 	RemoveInputBlock({ Name = "MelUsedTipJar" })
 end
 
-function TipCharonNoMoneyPresentation(usee, args)
+function TipCharonLockedPresentation(usee, args)
 	UseableOff({ Id = usee.ObjectId })
 	AddInputBlock({ Name = "MelUsedTipJarNoMoney" })
 	AngleTowardTarget({ Id = game.CurrentRun.Hero.ObjectId, DestinationId = usee.ObjectId })
@@ -230,7 +238,7 @@ function TipCharonNoMoneyPresentation(usee, args)
 	PlaySound({ Name = "/Leftovers/World Sounds/CaravanJostle2", Id = usee.ObjectId })
 
 	game.thread(game.PlayVoiceLines, tippingNoMoneyVoiceLines, true)
-	game.thread(game.InCombatText, usee.ObjectId, "ModsNikkelMCharonsTipJar_TipJarUseText_NoMoney_FloatText", 2.5)
+	game.thread(game.InCombatText, usee.ObjectId, args.FloatText, 2.5)
 	game.wait(2)
 	RemoveInputBlock({ Name = "MelUsedTipJarNoMoney" })
 	UseableOn({ Id = usee.ObjectId })
