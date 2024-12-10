@@ -125,7 +125,7 @@ function mod.SpawnCharonsTipJar(source, args)
 	local spawnId = nil
 
 	local flipHorizontal = false
-	local offsetX, offsetY = 0
+	local offsetX, offsetY = 0, 0
 
 	if source.Name == "I_PreBoss01" then
 		spawnId = 619941
