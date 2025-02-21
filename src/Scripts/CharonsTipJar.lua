@@ -66,7 +66,7 @@ local tippingInteractVoicelines = {
 				}
 			}
 		},
-		-- Charon must *not* be present (Olympus)
+		-- Charon must *not* be present (Summit)
 		{
 			Cue = "/VO/Melinoe_1290",
 			Text = "Lord Charon will want this.",
@@ -74,7 +74,7 @@ local tippingInteractVoicelines = {
 			{
 				{
 					Path = { "CurrentRun", "CurrentRoom", "Name" },
-					IsAny = { "P_PreBoss01" }
+					IsAny = { "Q_PreBoss01" }
 				}
 			}
 		},
@@ -116,41 +116,38 @@ table.insert(game.EncounterSets.ShopRoomEvents, {
 	FunctionName = _PLUGIN.guid .. '.' .. 'SpawnCharonsTipJar'
 })
 
--- Spawns the tip jar, if the correct room is entered (I_PreBoss01 for Tartarus or P_PreBoss01 for Olympus) - for testing, F_PreBoss01 for Erebus
+-- Spawns the tip jar, if the correct room is entered (I_PreBoss01 for Tartarus or Q_PreBoss01 for the Summit) - for testing, F_PreBoss01 for Erebus
 function mod.SpawnCharonsTipJar(source, args)
-	-- We only spawn the tip jar in a shop room before the final boss of the run
-	-- For testing in Erebus:				and source.Name ~= "F_PreBoss01"
-	if source.Name ~= "I_PreBoss01" and source.Name ~= "P_PreBoss01" then
-		return
-	end
+	-- game.GameState.Resources.Money = 0
 
-	-- For testing
-	-- game.GameState.Resources.Money = 1000
-
-	-- Defines the starting point for the spawn, against which the offset is applied. This is the Charon NPC
-	-- Can get the Object Id by printing the npc argument in game.UseNPC
-	-- F_PreBoss01: 561301
-	-- I_PreBoss01: 619941
+	-- Defines the starting point for the spawn, against which the offset is applied.
+	-- Can get the ObjectId by printing the npc argument in game.UseNPC() if needed
+	-- F_PreBoss01: 561301 -- Charon
+	-- I_PreBoss01: 619941 -- Charon
 	-- P_PreBoss01: 744832 -- Scarecrow obstacle, not an NPC
+	-- Q_PreBoss01: 769407 -- Hermes (works also if he is not present)
 	local spawnId = nil
-
 	local flipHorizontal = false
+	-- Positive Y is down, positive X is right
 	local offsetX, offsetY = 0, 0
 
+	-- We only spawn the tip jar in a shop room before the final boss of the run
 	if source.Name == "I_PreBoss01" then
 		spawnId = 619941
 		offsetY = 350
 		flipHorizontal = true
-	elseif source.Name == "P_PreBoss01" then
-		spawnId = 744832
-		offsetX = -120
-		offsetY = 80
+	elseif source.Name == "Q_PreBoss01" then
+		spawnId = 769407
+		offsetX = -450
+		offsetY = -1200
 		flipHorizontal = true
 		-- For testing, not properly placed
 		-- elseif source.Name == "F_PreBoss01" then
 		-- 	spawnId = 561301
 		-- 	offsetX = 0
 		-- 	offsetY = 300
+	else
+		return
 	end
 
 	-- Copies the mailbox item
