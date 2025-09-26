@@ -118,7 +118,8 @@ table.insert(game.EncounterSets.ShopRoomEvents, {
 
 -- Spawns the tip jar, if the correct room is entered (I_PreBoss01 for Tartarus or Q_PreBoss01 for the Summit) - for testing, F_PreBoss01 for Erebus
 function mod.SpawnCharonsTipJar(source, args)
-	-- game.GameState.Resources.Money = 0
+	-- We need to load the package containing the obstacle graphics
+	LoadPackages({ Name = "BiomeHub" })
 
 	-- Defines the starting point for the spawn, against which the offset is applied.
 	-- Can get the ObjectId by printing the npc argument in game.UseNPC() if needed
