@@ -1,13 +1,17 @@
 # Changelog
 
-## v1.2.0
+## v1.2.1
 
 <!--Releasenotes start-->
+- Removed voicelines that incorrectly play when approaching the tip jar.
+<!--Releasenotes end-->
+
+## v1.2.0
+
 - Fixed the tip jar not being visible after the 1.0 update.
 - Added an additional flavour text when tipping Charon.
 - Added German localization.
 - Updated dependencies.
-<!--Releasenotes end-->
 
 ## v1.1.0
 

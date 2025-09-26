@@ -170,6 +170,7 @@ function mod.SpawnCharonsTipJar(source, args)
 
 	-- Overwrite some default values
 	tipJar.SetupEvents = {}
+	tipJar.DistanceTriggers = {}
 	tipJar.InteractDistance = 150
 
 	-- The normal tipping text is shown as the UseText
