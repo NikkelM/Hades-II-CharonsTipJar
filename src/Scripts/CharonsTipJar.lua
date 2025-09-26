@@ -118,7 +118,8 @@ table.insert(game.EncounterSets.ShopRoomEvents, {
 
 -- Spawns the tip jar, if the correct room is entered (I_PreBoss01 for Tartarus or Q_PreBoss01 for the Summit) - for testing, F_PreBoss01 for Erebus
 function mod.SpawnCharonsTipJar(source, args)
-	-- game.GameState.Resources.Money = 0
+	-- We need to load the package containing the obstacle graphics
+	LoadPackages({ Name = "BiomeHub" })
 
 	-- Defines the starting point for the spawn, against which the offset is applied.
 	-- Can get the ObjectId by printing the npc argument in game.UseNPC() if needed
@@ -199,13 +200,18 @@ end
 function mod.DetermineAndPlayTippingPresentation(usee, args)
 	args = args or {}
 	if game.CurrentRun.ModsNikkelMCharonsTipJarCharonTipped then
-		args.FloatText = "ModsNikkelMCharonsTipJar_TipJarUseText_AlreadyTipped_FloatText"
+		args.FloatText = "ModsNikkelMCharonsTipJar_AlreadyTipped_FloatText"
 		args.MelinoeVoiceLines = tippingAlreadyTippedVoiceLines
 		TipCharonLockedPresentation(usee, args)
 	elseif game.HasResource("Money", 1) then
+		if game.HasResource("Money", 200) then
+			args.FloatText = "ModsNikkelMCharonsTipJar_TipInProgress_Generous_FloatText"
+		else
+			args.FloatText = "ModsNikkelMCharonsTipJar_TipInProgress_FloatText"
+		end
 		TipCharonPresentation(usee, args)
 	else
-		args.FloatText = "ModsNikkelMCharonsTipJar_TipJarUseText_NoMoney_FloatText"
+		args.FloatText = "ModsNikkelMCharonsTipJar_NoMoney_FloatText"
 		args.MelinoeVoiceLines = tippingNoMoneyVoiceLines
 		TipCharonLockedPresentation(usee, args)
 	end
@@ -226,6 +232,8 @@ function TipCharonPresentation(usee, args)
 
 	-- Play animations & voicelines
 	TippingPresentation(usee)
+	-- Show "tip accepted" text
+	game.thread(game.InCombatText, usee.ObjectId, args.FloatText, 3)
 	-- Remove money
 	game.SpendResources({ Money = moneyTipped }, "ModsNikkelMCharonsTipJarCharonTip")
 	-- Count towards rewards card progress
