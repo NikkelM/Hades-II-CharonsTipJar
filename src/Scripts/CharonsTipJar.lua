@@ -200,13 +200,18 @@ end
 function mod.DetermineAndPlayTippingPresentation(usee, args)
 	args = args or {}
 	if game.CurrentRun.ModsNikkelMCharonsTipJarCharonTipped then
-		args.FloatText = "ModsNikkelMCharonsTipJar_TipJarUseText_AlreadyTipped_FloatText"
+		args.FloatText = "ModsNikkelMCharonsTipJar_AlreadyTipped_FloatText"
 		args.MelinoeVoiceLines = tippingAlreadyTippedVoiceLines
 		TipCharonLockedPresentation(usee, args)
 	elseif game.HasResource("Money", 1) then
+		if game.HasResource("Money", 200) then
+			args.FloatText = "ModsNikkelMCharonsTipJar_TipInProgress_Generous_FloatText"
+		else
+			args.FloatText = "ModsNikkelMCharonsTipJar_TipInProgress_FloatText"
+		end
 		TipCharonPresentation(usee, args)
 	else
-		args.FloatText = "ModsNikkelMCharonsTipJar_TipJarUseText_NoMoney_FloatText"
+		args.FloatText = "ModsNikkelMCharonsTipJar_NoMoney_FloatText"
 		args.MelinoeVoiceLines = tippingNoMoneyVoiceLines
 		TipCharonLockedPresentation(usee, args)
 	end
@@ -227,6 +232,8 @@ function TipCharonPresentation(usee, args)
 
 	-- Play animations & voicelines
 	TippingPresentation(usee)
+	-- Show "tip accepted" text
+	game.thread(game.InCombatText, usee.ObjectId, args.FloatText, 3)
 	-- Remove money
 	game.SpendResources({ Money = moneyTipped }, "ModsNikkelMCharonsTipJarCharonTip")
 	-- Count towards rewards card progress
