@@ -124,16 +124,34 @@ function mod.SpawnCharonsTipJar(source, args)
 	-- Defines the starting point for the spawn, against which the offset is applied.
 	-- Can get the ObjectId by printing the npc argument in game.UseNPC() if needed
 	-- F_PreBoss01: 561301 -- Charon
+	-- 							776332 -- ZagContractReward
+	-- G_PreBoss01: 561345 -- Charon
+	-- 							776334 -- ZagContractReward
+	-- H_PreBoss01: 565394 -- Charon
+	-- 							776337 -- ZagContractReward
 	-- I_PreBoss01: 619941 -- Charon
+	-- 							776340 -- ZagContractReward
+	-- I_PreBoss02: 619941 -- Charon
+	-- 							800817 -- ZagContractReward
+	-- N_PreBoss01: 561342 -- Charon
+	-- 							776338 -- ZagContractReward
+	-- O_PreBoss01: 690991 -- Charon
+	-- 							776340 -- ZagContractReward
 	-- P_PreBoss01: 744832 -- Scarecrow obstacle, not an NPC
+	-- 							778667 -- ZagContractReward
 	-- Q_PreBoss01: 769407 -- Hermes (works also if he is not present)
+	-- 							793525 -- ZagContractReward
 	local spawnId = nil
 	local flipHorizontal = false
 	-- Positive Y is down, positive X is right
 	local offsetX, offsetY = 0, 0
 
-	-- We only spawn the tip jar in a shop room before the final boss of the run
+	-- Always spawn the tip jar in a shop room before the final boss of the run
 	if source.Name == "I_PreBoss01" then
+		spawnId = 619941
+		offsetY = 350
+		flipHorizontal = true
+	elseif source.Name == "I_PreBoss02" then
 		spawnId = 619941
 		offsetY = 350
 		flipHorizontal = true
@@ -142,11 +160,23 @@ function mod.SpawnCharonsTipJar(source, args)
 		offsetX = -450
 		offsetY = -1200
 		flipHorizontal = true
-		-- For testing, not properly placed
-		-- elseif source.Name == "F_PreBoss01" then
-		-- 	spawnId = 561301
-		-- 	offsetX = 0
-		-- 	offsetY = 300
+		-- If we are in a Chaos trial, also spawn the tip jar in all other pre-boss rooms
+	elseif game.CurrentRun and game.CurrentRun.ActiveBounty then
+		if source.Name == "F_PreBoss01" then
+			spawnId = 561301
+		elseif source.Name == "G_PreBoss01" then
+			spawnId = 561345
+		elseif source.Name == "H_PreBoss01" then
+			spawnId = 565394
+		elseif source.Name == "N_PreBoss01" then
+			spawnId = 561342
+		elseif source.Name == "O_PreBoss01" then
+			spawnId = 690991
+		elseif source.Name == "P_PreBoss01" then
+			spawnId = 561301
+		else
+			return
+		end
 	else
 		return
 	end
