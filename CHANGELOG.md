@@ -1,10 +1,16 @@
 # Changelog
 
-## v1.2.1
+## v1.3.0
 
 <!--Releasenotes start-->
-- Removed voicelines that incorrectly play when approaching the tip jar.
+- Added a tip jar to pre-boss shop rooms just before the final boss of Chaos trials, no matter the region it takes place in (Chaos above and below trials will still only have a tip jar in the final shop).
+- Fixed the tip jar no longer appearing in Tartarus after reaching the true ending.
+- Fixed the tip jar overlapping with a certain reward in the Tartarus pre-boss shop room, if it is present.
 <!--Releasenotes end-->
+
+## v1.2.1
+
+- Removed voicelines that incorrectly play when approaching the tip jar.
 
 ## v1.2.0
 
