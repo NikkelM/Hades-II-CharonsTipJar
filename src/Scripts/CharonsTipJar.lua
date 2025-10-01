@@ -6,7 +6,7 @@ local postTippingCharonVoicelines = game.DeepCopyTable(game.GlobalVoiceLines.Pur
 postTippingCharonVoicelines.GameStateRequirements = {
 	{
 		Path = { "CurrentRun", "CurrentRoom", "Name" },
-		IsAny = { "F_PreBoss01", "I_PreBoss01" }
+		IsAny = { "F_PreBoss01", "G_PreBoss01", "H_PreBoss01", "I_PreBoss01", "I_PreBoss02", "N_PreBoss01", "O_PreBoss01" }
 	}
 }
 postTippingCharonVoicelines.ChanceToPlay = 1
