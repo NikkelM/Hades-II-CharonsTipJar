@@ -41,11 +41,11 @@ public.config = config -- so other mods can access our config
 local function on_ready()
 	if config.enabled == false then return end
 
-	import "Scripts/CharonsTipJar.lua"
-
 	-- Localization/Text replacements
 	import 'Game/Text/HelpText.de.sjson.lua'
 	import 'Game/Text/HelpText.en.sjson.lua'
+
+	import "Scripts/CharonsTipJar.lua"
 end
 
 local function on_reload()

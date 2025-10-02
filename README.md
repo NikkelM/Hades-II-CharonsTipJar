@@ -10,6 +10,8 @@ Tipped Gold will count towards Obol point (reward cards) progress with Charon.
 > *No refunds*
 > <br>&nbsp;&nbsp;&nbsp;&nbsp; \- Charon
 
+![What's this box doing here?](https://github.com/user-attachments/assets/117b79e7-445d-412a-ac9c-1d1d0d68bc61)
+
 ![Tipping unspent Gold to Charon](https://github.com/user-attachments/assets/fd48bf46-97db-45a1-b10a-4dc6254f27d9)
 
 ![No Gold, no tipping](https://github.com/user-attachments/assets/35c6b35f-deef-4eb5-a80e-18e774f0e665)
