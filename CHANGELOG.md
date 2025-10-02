@@ -3,7 +3,7 @@
 ## v1.4.0
 
 <!--Releasenotes start-->
-- Added aconversation with Charon/a note when first encountering the tip jar.
+- Added a conversation with Charon/a note when first encountering the tip jar.
 - Fixed Charon not always responding to tips in rooms where he is present.
 <!--Releasenotes end-->
 
