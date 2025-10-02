@@ -115,7 +115,6 @@ local tippingAlreadyTippedVoiceLines = {
 local modsNikkelMCharonsTipJarTipJarIntro01_A = {
 	Name = "ModsNikkelMCharonsTipJarTipJarIntro01_A",
 	PlayOnce = true,
-	UseableOffSource = true,
 	PreEventFunctionName = _PLUGIN.guid .. "." .. "SetConversationIds",
 	{
 		UsePlayerSource = true,
@@ -158,13 +157,17 @@ local modsNikkelMCharonsTipJarTipJarIntro01_A = {
 		Text =
 		"Why thank you! I hope you know it is entirely unnecessary for you to include these tips in your loyalty program, but I do appreciate it nonetheless, my lord."
 	},
+	EndVoiceLines = {
+		PreLineWait = 0.2,
+		ObjectType = "NPC_Charon_01",
+		{ Cue = "/VO/Charon_0148", Text = "{#Emph}Mmmm..." },
+	},
 }
 
 -- If Charon is not present in this room
 local modsNikkelMCharonsTipJarTipJarIntro01_B = {
 	Name = "ModsNikkelMCharonsTipJarTipJarIntro01_B",
 	PlayOnce = true,
-	UseableOffSource = true,
 	PreEventFunctionName = _PLUGIN.guid .. "." .. "SetConversationIds",
 	{
 		UsePlayerSource = true,
@@ -386,7 +389,8 @@ function mod.DetermineAndPlayTippingPresentation(usee, args)
 		else
 			game.PlayTextLines(usee, modsNikkelMCharonsTipJarTipJarIntro01_B)
 		end
-		game.wait(0.3)
+		-- Don't immediately tip - prevents accidentally tipping before shopping if the exclamation mark is distracting
+		return
 	end
 
 	if game.CurrentRun.CurrentRoom.ModsNikkelMCharonsTipJarCharonTipped then

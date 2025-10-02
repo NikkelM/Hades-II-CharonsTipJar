@@ -1,11 +1,15 @@
 # Changelog
 
-## v1.4.0
+## v1.4.1
 
 <!--Releasenotes start-->
+- You are no longer forced to immediately tip after the intro conversation at the tip jar - prevents accidentally tipping all Gold before shopping if the exclamation mark is a distracting presence.
+<!--Releasenotes end-->
+
+## v1.4.0
+
 - Added a conversation with Charon/a note when first encountering the tip jar.
 - Fixed Charon not always responding to tips in rooms where he is present.
-<!--Releasenotes end-->
 
 ## v1.3.0
 
