@@ -1,9 +1,10 @@
 # Changelog
 
-## v1.3.1
+## v1.4.0
 
 <!--Releasenotes start-->
-- Fixed Charon not always responding to tips in rooms where he is present
+- Added aconversation with Charon/a note when first encountering the tip jar.
+- Fixed Charon not always responding to tips in rooms where he is present.
 <!--Releasenotes end-->
 
 ## v1.3.0
