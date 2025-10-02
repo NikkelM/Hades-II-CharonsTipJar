@@ -111,13 +111,92 @@ local tippingAlreadyTippedVoiceLines = {
 	{ Cue = "/VO/Melinoe_2386", Text = "Can't do it." }
 }
 
+-- If Charon is present in this room
+local modsNikkelMCharonsTipJarTipJarIntro01_A = {
+	Name = "ModsNikkelMCharonsTipJarTipJarIntro01_A",
+	PlayOnce = true,
+	UseableOffSource = true,
+	PreEventFunctionName = _PLUGIN.guid .. "." .. "SetConversationIds",
+	{
+		UsePlayerSource = true,
+		PreLineAnim = "MelTalkPensive01",
+		PreLineAnimTarget = "Hero",
+		Text =
+		"What is this over here, Lord Charon? The box with all the coins in it? I don't suppose this is some sort of new ware to help me with my task, is it?"
+	},
+	{
+		Cue = "/VO/Charon_0036",
+		Source = "NPC_Charon_01",
+		Portrait = "Portrait_Charon_Default_01",
+		PreLineAnim = "Charon_Greeting",
+		Text = "{#Emph}Haaaa{#Prev}, hrrrnnnnggghhh..."
+	},
+	{
+		UsePlayerSource = true,
+		PreLineAnim = "MelTalkBrooding01",
+		PreLineAnimTarget = "Hero",
+		PostLineAnim = "MelinoeIdleWeaponless",
+		PostLineAnimTarget = "Hero",
+		Portrait = "Portrait_Mel_Casual_01",
+		Text =
+		"You're right, I won't have any use for the remaining Gold in my possession going forward. One way or another, I will return to shadow soon. I might as well leave the coins with you now to have them disposed of properly."
+	},
+	{
+		Cue = "/VO/Charon_0011",
+		Source = "NPC_Charon_01",
+		Portrait = "Portrait_Charon_Default_01",
+		PreLineAnim = "Charon_Thanking",
+		Text = "{#Emph}Hrrnnaaaauugghh..."
+	},
+	{
+		UsePlayerSource = true,
+		PreLineAnim = "MelTalkExplaining01",
+		PreLineAnimTarget = "Hero",
+		PostLineAnim = "MelinoeIdleWeaponless",
+		PostLineAnimTarget = "Hero",
+		Portrait = "Portrait_Mel_Pleased_01",
+		Text =
+		"Why thank you! I hope you know it is entirely unnecessary for you to include these tips in your loyalty program, but I do appreciate it nonetheless, my lord."
+	},
+}
+
+-- If Charon is not present in this room
+local modsNikkelMCharonsTipJarTipJarIntro01_B = {
+	Name = "ModsNikkelMCharonsTipJarTipJarIntro01_B",
+	PlayOnce = true,
+	UseableOffSource = true,
+	PreEventFunctionName = _PLUGIN.guid .. "." .. "SetConversationIds",
+	{
+		UsePlayerSource = true,
+		PreLineAnim = "MelTalkPensive01",
+		PreLineAnimTarget = "Hero",
+		Portrait = "Portrait_Mel_Casual_01",
+		Text =
+		"Oh, there is a note on this box... {#Emph}Hey M. Leave any leftover Gold you have in here. Hermes will get it to me. Charon"
+	},
+	{
+		UsePlayerSource = true,
+		Portrait = "Portrait_Mel_Intense_01",
+		Text =
+		"He's right. I won't have any use for the remaining Gold in my possession going forward. One way or another, I will return to shadow soon."
+	},
+	{
+		UsePlayerSource = true,
+		PostLineAnim = "MelinoeIdleWeaponless",
+		PostLineAnimTarget = "Hero",
+		Portrait = "Portrait_Mel_Default_01",
+		Text =
+		"There is more on the back... {#Emph}I will count any tips you leave towards your rewards. Honor system."
+	},
+}
+
 -- Add the setup function to the shop room setup events list
 table.insert(game.EncounterSets.ShopRoomEvents, {
-	FunctionName = _PLUGIN.guid .. '.' .. 'SpawnCharonsTipJar'
+	FunctionName = _PLUGIN.guid .. "." .. "SpawnCharonsTipJar"
 })
 -- I_PreBoss02 appends more things to the shop room setup events list, which somehow removes our entry, so add it to the appended table as well
 table.insert(game.RoomData.I_PreBoss02.StartUnthreadedEvents, {
-	FunctionName = _PLUGIN.guid .. '.' .. 'SpawnCharonsTipJar'
+	FunctionName = _PLUGIN.guid .. "." .. "SpawnCharonsTipJar"
 })
 
 -- Spawns the tip jar, if the correct room is entered (I_PreBoss01 for Tartarus or Q_PreBoss01 for the Summit) - for testing, F_PreBoss01 for Erebus
@@ -143,6 +222,7 @@ function mod.SpawnCharonsTipJar(source, args)
 	-- Q_PreBoss01: 769407 -- Hermes (works also if he is not present)
 	-- 							793525 -- ZagContractReward
 	local spawnId = nil
+	local charonId = nil
 	local flipHorizontal = false
 	-- Positive X is right, positive Y is down
 	local offsetX, offsetY = 0, 0
@@ -154,18 +234,21 @@ function mod.SpawnCharonsTipJar(source, args)
 	if source.Name == "I_PreBoss01" then
 		-- Based on Charon, to the bottom left of him
 		spawnId = 619941
+		charonId = 619941
 		offsetX = -60
 		offsetY = 390
 		flipHorizontal = true
 	elseif source.Name == "I_PreBoss02" then
 		-- Based on Charon, to the bottom left of him
 		spawnId = 619941
+		charonId = 619941
 		offsetX = -220
 		offsetY = 510
 		flipHorizontal = true
 	elseif source.Name == "Q_PreBoss01" then -- Done
 		-- Based on Hermes to the bottom left of the exit door
 		spawnId = 769407
+		charonId = nil
 		offsetX = -450
 		offsetY = -1200
 		flipHorizontal = true
@@ -175,6 +258,7 @@ function mod.SpawnCharonsTipJar(source, args)
 		if source.Name == "F_PreBoss01" then -- Done
 			-- Based on Charon offset to the right next to the exit door
 			spawnId = 561301
+			charonId = 561301
 			offsetX = 630
 			offsetY = 150
 		elseif source.Name == "G_PreBoss01" then -- Done
@@ -183,26 +267,31 @@ function mod.SpawnCharonsTipJar(source, args)
 		elseif source.Name == "H_PreBoss01" then -- Done
 			-- Based on ZagContractReward slightly top-right of Charon between him and the exit door
 			-- spawnId = 776337
+			-- charonId = 565394
 			-- offsetX = -275
 			-- offsetY = -480
 			-- Based on Charon to the bottom right of the exit door
 			spawnId = 565394
+			charonId = 565394
 			offsetX = 850
 			offsetY = 120
 		elseif source.Name == "N_PreBoss01" then -- Done
 			-- Based on ZagContractReward to the bottom left of the exit door, below the vases
 			spawnId = 776338
+			charonId = 561342
 			offsetX = 225
 			offsetY = -160
 			flipHorizontal = true
 		elseif source.Name == "O_PreBoss01" then -- Done
-			-- Based on Charon above him to the left of the exit door
+			-- Based on Charon scarecrow above it to the left of the exit door
 			spawnId = 690991
+			charonId = 690991
 			offsetX = 150
 			offsetY = -350
 		elseif source.Name == "P_PreBoss01" then -- Done
 			-- Based on ZagContractReward to the right of the rewards to the left of the stairs
 			spawnId = 778667
+			charonId = nil
 			offsetX = 1380
 			offsetY = -490
 		else
@@ -232,13 +321,25 @@ function mod.SpawnCharonsTipJar(source, args)
 		FlipHorizontal({ Id = tipJar.ObjectId })
 	end
 
-	-- Overwrite some default values
-	tipJar.SetupEvents = {}
+	-- If the tip jar has not been introduced yet, give it a status animation
+	tipJar.SetupEvents = {
+		{
+			FunctionName = "PlayStatusAnimation",
+			Args = { Animation = "StatusIconWantsToTalkImportant" },
+			GameStateRequirements = {
+				{
+					Path = { "GameState", "TextLinesRecord" },
+					HasNone = { "ModsNikkelMCharonsTipJarTipJarIntro01_A", "ModsNikkelMCharonsTipJarTipJarIntro01_B" }
+				},
+			},
+		},
+	}
+	tipJar.CharonId = charonId
 	tipJar.DistanceTriggers = {}
 	tipJar.InteractDistance = 150
 
 	tipJar.CanReceiveGift = true
-	tipJar.ReceiveGiftFunctionName =  _PLUGIN.guid .. '.' .. 'DummyTippingPresentation'
+	tipJar.ReceiveGiftFunctionName = _PLUGIN.guid .. "." .. "DummyTippingPresentation"
 	-- The normal tipping text is shown as the UseText
 	tipJar.UseText = "ModsNikkelMCharonsTipJar_TipJarUseText"
 	-- If the player can talk to the tip jar (always true), and additionally has money AND has already tipped, canAssist is true, and the below text is shown instead of the normal UseText
@@ -265,9 +366,9 @@ function mod.SpawnCharonsTipJar(source, args)
 
 	-- This will choose which of the presentation functions to call, depending on if the player has money at the moment or not
 	-- Unrelated to which text is shown
-	tipJar.OnUsedFunctionName = _PLUGIN.guid .. '.' .. 'DetermineAndPlayTippingPresentation'
+	tipJar.OnUsedFunctionName = _PLUGIN.guid .. "." .. "DetermineAndPlayTippingPresentation"
 	-- This is a dummy function that does nothing, as we don't actually show a "Special" button prompt, so don't want to do anything there
-	tipJar.SpecialInteractFunctionName = _PLUGIN.guid .. '.' .. 'DummyTippingPresentation'
+	tipJar.SpecialInteractFunctionName = _PLUGIN.guid .. "." .. "DummyTippingPresentation"
 
 	SetScale({ Id = tipJar.ObjectId, Fraction = 0.25 })
 	game.SetupObstacle(tipJar)
@@ -277,11 +378,22 @@ end
 -- Determines on-the-fly which of the presentation functions to use
 function mod.DetermineAndPlayTippingPresentation(usee, args)
 	args = args or {}
+
+	-- If this is the first time interacting with the tip jar, play the appropiate intro conversation first
+	if not game.GameState.TextLinesRecord.ModsNikkelMCharonsTipJarTipJarIntro01_A and not game.GameState.TextLinesRecord.ModsNikkelMCharonsTipJarTipJarIntro01_B then
+		if usee.CharonId ~= nil then
+			game.PlayTextLines(usee, modsNikkelMCharonsTipJarTipJarIntro01_A)
+		else
+			game.PlayTextLines(usee, modsNikkelMCharonsTipJarTipJarIntro01_B)
+		end
+		game.wait(0.3)
+	end
+
 	if game.CurrentRun.CurrentRoom.ModsNikkelMCharonsTipJarCharonTipped then
 		args.FloatText = "ModsNikkelMCharonsTipJar_AlreadyTipped_FloatText"
 		args.MelinoeVoiceLines = tippingAlreadyTippedVoiceLines
 		args.CombatTextOffsetY = -70
-		TipCharonLockedPresentation(usee, args)
+		mod.TipCharonLockedPresentation(usee, args)
 	elseif game.HasResource("Money", 1) then
 		if game.HasResource("Money", 200) then
 			args.FloatText = "ModsNikkelMCharonsTipJar_TipInProgress_Generous_FloatText"
@@ -289,12 +401,12 @@ function mod.DetermineAndPlayTippingPresentation(usee, args)
 			args.FloatText = "ModsNikkelMCharonsTipJar_TipInProgress_FloatText"
 		end
 		args.CombatTextOffsetY = -70
-		TipCharonPresentation(usee, args)
+		mod.TipCharonPresentation(usee, args)
 	else
 		args.FloatText = "ModsNikkelMCharonsTipJar_NoMoney_FloatText"
 		args.MelinoeVoiceLines = tippingNoMoneyVoiceLines
 		args.CombatTextOffsetY = -120
-		TipCharonLockedPresentation(usee, args)
+		mod.TipCharonLockedPresentation(usee, args)
 	end
 end
 
@@ -303,7 +415,7 @@ function mod.DummyTippingPresentation(usee, args)
 	return
 end
 
-function TipCharonPresentation(usee, args)
+function mod.TipCharonPresentation(usee, args)
 	AddInputBlock({ Name = "MelUsedTipJar" })
 	-- Disable using the tip jar (removes input prompt)
 	UseableOff({ Id = usee.ObjectId })
@@ -312,7 +424,7 @@ function TipCharonPresentation(usee, args)
 	local moneyTipped = game.GameState.Resources.Money
 
 	-- Play animations & voicelines
-	TippingPresentation(usee)
+	mod.TippingPresentation(usee)
 	-- Show "tip accepted" text
 	game.thread(game.InCombatText, usee.ObjectId, args.FloatText, 2.2, { OffsetY = args.CombatTextOffsetY })
 	-- Remove money
@@ -330,7 +442,7 @@ function TipCharonPresentation(usee, args)
 	UseableOn({ Id = usee.ObjectId })
 end
 
-function TipCharonLockedPresentation(usee, args)
+function mod.TipCharonLockedPresentation(usee, args)
 	UseableOff({ Id = usee.ObjectId })
 	AddInputBlock({ Name = "MelUsedTipJarNoMoney" })
 	AngleTowardTarget({ Id = game.CurrentRun.Hero.ObjectId, DestinationId = usee.ObjectId })
@@ -346,13 +458,13 @@ function TipCharonLockedPresentation(usee, args)
 end
 
 -- Animations from game.ReceivedGiftPresentation(), without the gifting logic and voicelines
-function TippingPresentation(target)
+function mod.TippingPresentation(target)
 	AngleTowardTarget({ Id = game.CurrentRun.Hero.ObjectId, DestinationId = target.ObjectId })
 	SetAnimation({ Name = "MelTalkGifting01", DestinationId = game.CurrentRun.Hero.ObjectId })
 
 	game.wait(0.35)
 	-- Play sound and money VFX as if buying something
-	ScaledShoppingSuccessItemPresentation(target)
+	mod.ScaledShoppingSuccessItemPresentation(target)
 	-- Replace tip jar with closed version
 	SetAnimation({ Name = "SupplyDropObjectClosed", DestinationId = target.ObjectId })
 
@@ -364,7 +476,26 @@ function TippingPresentation(target)
 end
 
 -- Same as game.ShoppingSuccessItemPresentation() but with a scaled up coin pickup animation (to be more visible with the scaled mailbox), and no consumeSound
-function ScaledShoppingSuccessItemPresentation(item)
+function mod.ScaledShoppingSuccessItemPresentation(item)
 	PlaySound({ Name = "/Leftovers/Menu Sounds/StoreBuyingItem" })
 	CreateAnimation({ Name = "MoneyDropCoinPickup", DestinationId = item.ObjectId, Scale = 4, OffsetY = -40 })
+end
+
+-- Source is the tip jar
+function mod.SetConversationIds(source, args, textLines)
+	if not source.CharonId then
+		-- The first Mel cue should have her look at the tip jar
+		textLines[1].AngleHeroTowardTargetId = source.ObjectId
+	else
+		-- The first Mel cue should have her look at Charon
+		textLines[1].AngleHeroTowardTargetId = source.CharonId
+		-- The Charon cues should have him as source
+		for _, line in ipairs(textLines) do
+			if line.Portrait and line.Portrait:find("Charon") then
+				if line.PreLineAnim then
+					line.PreLineAnimTarget = source.CharonId
+				end
+			end
+		end
+	end
 end
