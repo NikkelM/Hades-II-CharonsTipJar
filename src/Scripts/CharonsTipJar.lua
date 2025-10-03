@@ -2,12 +2,12 @@ local mod = modutil.mod.Mod.Register(_PLUGIN.guid)
 
 -- Charon voicelines thanking for the tip, if he is there himself. Same as purchase responses
 local postTippingCharonVoicelines = game.DeepCopyTable(game.GlobalVoiceLines.PurchasedConsumableVoiceLines[2])
--- Charon must be present for this to play
+-- Charon must be present (alive) for him to respond
 postTippingCharonVoicelines.GameStateRequirements = {
 	{
-		Path = { "CurrentRun", "CurrentRoom", "Name" },
-		IsAny = { "F_PreBoss01", "G_PreBoss01", "H_PreBoss01", "I_PreBoss01", "I_PreBoss02", "N_PreBoss01", "O_PreBoss01" }
-	}
+		FunctionName = "RequiredAlive",
+		FunctionArgs = { Units = { "NPC_Charon_01", }, Alive = true },
+	},
 }
 postTippingCharonVoicelines.ChanceToPlay = 1
 
@@ -21,16 +21,16 @@ local tippingInteractVoicelines = {
 		{
 			{ Name = "MelinoeAnyQuipSpeech" },
 		},
-		-- Charon must be present (Erebus, Tartarus)
+		-- Charon must be present
 		{
 			Cue = "/VO/Melinoe_2358",
 			Text = "This is for you!",
 			GameStateRequirements =
 			{
 				{
-					Path = { "CurrentRun", "CurrentRoom", "Name" },
-					IsAny = { "F_PreBoss01", "I_PreBoss01" }
-				}
+					FunctionName = "RequiredAlive",
+					FunctionArgs = { Units = { "NPC_Charon_01", }, Alive = true },
+				},
 			}
 		},
 		{
@@ -39,9 +39,9 @@ local tippingInteractVoicelines = {
 			GameStateRequirements =
 			{
 				{
-					Path = { "CurrentRun", "CurrentRoom", "Name" },
-					IsAny = { "F_PreBoss01", "I_PreBoss01" }
-				}
+					FunctionName = "RequiredAlive",
+					FunctionArgs = { Units = { "NPC_Charon_01", }, Alive = true },
+				},
 			}
 		},
 		{
@@ -50,9 +50,9 @@ local tippingInteractVoicelines = {
 			GameStateRequirements =
 			{
 				{
-					Path = { "CurrentRun", "CurrentRoom", "Name" },
-					IsAny = { "F_PreBoss01", "I_PreBoss01" }
-				}
+					FunctionName = "RequiredAlive",
+					FunctionArgs = { Units = { "NPC_Charon_01", }, Alive = true },
+				},
 			}
 		},
 		{
@@ -61,21 +61,21 @@ local tippingInteractVoicelines = {
 			GameStateRequirements =
 			{
 				{
-					Path = { "CurrentRun", "CurrentRoom", "Name" },
-					IsAny = { "F_PreBoss01", "I_PreBoss01" }
-				}
+					FunctionName = "RequiredAlive",
+					FunctionArgs = { Units = { "NPC_Charon_01", }, Alive = true },
+				},
 			}
 		},
-		-- Charon must *not* be present (Summit)
+		-- Charon must *not* be present
 		{
 			Cue = "/VO/Melinoe_1290",
 			Text = "Lord Charon will want this.",
 			GameStateRequirements =
 			{
 				{
-					Path = { "CurrentRun", "CurrentRoom", "Name" },
-					IsAny = { "Q_PreBoss01" }
-				}
+					FunctionName = "RequiredAlive",
+					FunctionArgs = { Units = { "NPC_Charon_01", }, Alive = false },
+				},
 			}
 		},
 		-- Anything works
@@ -202,7 +202,7 @@ table.insert(game.RoomData.I_PreBoss02.StartUnthreadedEvents, {
 	FunctionName = _PLUGIN.guid .. "." .. "SpawnCharonsTipJar"
 })
 
--- Spawns the tip jar, if the correct room is entered (I_PreBoss01 for Tartarus or Q_PreBoss01 for the Summit) - for testing, F_PreBoss01 for Erebus
+-- Spawns the tip jar in pre-boss rooms, both with free rewards and shops
 function mod.SpawnCharonsTipJar(source, args)
 	-- Defines the starting point for the spawn, against which the offset is applied.
 	-- Can get the ObjectId by printing the npc argument in game.UseNPC() if needed
@@ -225,76 +225,66 @@ function mod.SpawnCharonsTipJar(source, args)
 	-- Q_PreBoss01: 769407 -- Hermes (works also if he is not present)
 	-- 							793525 -- ZagContractReward
 	local spawnId = nil
-	local charonId = nil
 	local flipHorizontal = false
 	-- Positive X is right, positive Y is down
 	local offsetX, offsetY = 0, 0
 	-- Is this a normal bounty (not a Chaos above/below trial)?
-	local isStandardPackageBountyActive = IsGameStateEligible(source,
+	local isStandardPackageBountyActive = game.IsGameStateEligible(source,
 		game.NamedRequirementsData.StandardPackageBountyActive, args)
 
 	-- Always spawn the tip jar in a shop room before the final boss of the run
 	if source.Name == "I_PreBoss01" then
+		-- Always has Charon present
 		-- Based on Charon, to the bottom left of him
 		spawnId = 619941
-		charonId = 619941
 		offsetX = -60
 		offsetY = 390
 		flipHorizontal = true
 	elseif source.Name == "I_PreBoss02" then
+		-- Always has Charon present
 		-- Based on Charon, to the bottom left of him
 		spawnId = 619941
-		charonId = 619941
 		offsetX = -220
 		offsetY = 510
 		flipHorizontal = true
-	elseif source.Name == "Q_PreBoss01" then -- Done
+	elseif source.Name == "Q_PreBoss01" then
+		-- Works even if Hermes is not present
 		-- Based on Hermes to the bottom left of the exit door
 		spawnId = 769407
-		charonId = nil
 		offsetX = -450
 		offsetY = -1200
 		flipHorizontal = true
 		-- If we are in a "normal" Chaos trial, also spawn the tip jar in all other pre-boss rooms
-		-- Spawn it on the ZagContractReward, as Zag contracts cannot appear in normal Chaos trials
+		-- Always need to spawn it relative to the ZagContractReward, as Charon may not be present if the player chose a free reward
+		-- In those cases, the tip jar will be invisible and not work if spawned relative to the CharonId
 	elseif isStandardPackageBountyActive then
-		if source.Name == "F_PreBoss01" then -- Done
-			-- Based on Charon offset to the right next to the exit door
-			spawnId = 561301
-			charonId = 561301
-			offsetX = 630
-			offsetY = 150
-		elseif source.Name == "G_PreBoss01" then -- Done
+		if source.Name == "F_PreBoss01" then
+			-- Based on ZagContractReward offset to the right next to the exit door
+			spawnId = 776332
+			offsetX = 1370
+			offsetY = -360
+		elseif source.Name == "G_PreBoss01" then
 			-- On the ZagContractReward, between Charon and the shop items
 			spawnId = 776334
-		elseif source.Name == "H_PreBoss01" then -- Done
-			-- Based on ZagContractReward slightly top-right of Charon between him and the exit door
-			-- spawnId = 776337
-			-- charonId = 565394
-			-- offsetX = -275
-			-- offsetY = -480
-			-- Based on Charon to the bottom right of the exit door
-			spawnId = 565394
-			charonId = 565394
-			offsetX = 850
-			offsetY = 120
-		elseif source.Name == "N_PreBoss01" then -- Done
+		elseif source.Name == "H_PreBoss01" then
+			-- Based on ZagContractReward to the bottom right of the exit door
+			spawnId = 776337
+			offsetX = 200
+			offsetY = -200
+		elseif source.Name == "N_PreBoss01" then
 			-- Based on ZagContractReward to the bottom left of the exit door, below the vases
 			spawnId = 776338
-			charonId = 561342
 			offsetX = 225
 			offsetY = -160
 			flipHorizontal = true
-		elseif source.Name == "O_PreBoss01" then -- Done
+		elseif source.Name == "O_PreBoss01" then
 			-- Based on Charon scarecrow above it to the left of the exit door
 			spawnId = 690991
-			charonId = 690991
 			offsetX = 150
 			offsetY = -350
-		elseif source.Name == "P_PreBoss01" then -- Done
+		elseif source.Name == "P_PreBoss01" then
 			-- Based on ZagContractReward to the right of the rewards to the left of the stairs
 			spawnId = 778667
-			charonId = nil
 			offsetX = 1380
 			offsetY = -490
 		else
@@ -308,7 +298,7 @@ function mod.SpawnCharonsTipJar(source, args)
 	LoadPackages({ Name = "BiomeHub" })
 
 	-- Copies the mailbox item
-	local tipJar = game.DeepCopyTable(game.HubRoomData.Hub_Main.ObstacleData[583652])
+	local tipJar = game.DeepCopyTable(game.HubRoomData.Hub_Main.ObstacleData[583652]) or {}
 
 	tipJar.ObjectId = SpawnObstacle({
 		Name = "SupplyDropObject",
@@ -337,7 +327,9 @@ function mod.SpawnCharonsTipJar(source, args)
 			},
 		},
 	}
-	tipJar.CharonId = charonId
+
+	-- If Charon is present, this will be ~= 0
+	tipJar.CharonId = GetIdsByType({ Name = "NPC_Charon_01" })[1] or 0
 	tipJar.DistanceTriggers = {}
 	tipJar.InteractDistance = 150
 
@@ -384,10 +376,10 @@ function mod.DetermineAndPlayTippingPresentation(usee, args)
 
 	-- If this is the first time interacting with the tip jar, play the appropiate intro conversation first
 	if not game.GameState.TextLinesRecord.ModsNikkelMCharonsTipJarTipJarIntro01_A and not game.GameState.TextLinesRecord.ModsNikkelMCharonsTipJarTipJarIntro01_B then
-		if usee.CharonId ~= nil then
-			game.PlayTextLines(usee, modsNikkelMCharonsTipJarTipJarIntro01_A)
-		else
+		if usee.CharonId == 0 then
 			game.PlayTextLines(usee, modsNikkelMCharonsTipJarTipJarIntro01_B)
+		else
+			game.PlayTextLines(usee, modsNikkelMCharonsTipJarTipJarIntro01_A)
 		end
 		-- Don't immediately tip - prevents accidentally tipping before shopping if the exclamation mark is distracting
 		return
@@ -487,7 +479,7 @@ end
 
 -- Source is the tip jar
 function mod.SetConversationIds(source, args, textLines)
-	if not source.CharonId then
+	if source.CharonId == 0 then
 		-- The first Mel cue should have her look at the tip jar
 		textLines[1].AngleHeroTowardTargetId = source.ObjectId
 	else

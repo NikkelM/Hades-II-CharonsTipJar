@@ -1,10 +1,15 @@
 # Changelog
 
-## v1.4.1
+## v1.4.2
 
 <!--Releasenotes start-->
-- You are no longer forced to immediately tip after the intro conversation at the tip jar - prevents accidentally tipping all Gold before shopping if the exclamation mark is a distracting presence.
+- If participating in a Chaos trial, the tip jar will now always appear in the final room before the boss, even if it contains a free reward and not a shop.
+- Prevented voicelines from playing where Melinoe speaks to Charon even when he is not present in the current room.
 <!--Releasenotes end-->
+
+## v1.4.1
+
+- You are no longer forced to immediately tip after the intro conversation at the tip jar - prevents accidentally tipping all Gold before shopping if the exclamation mark is a distracting presence.
 
 ## v1.4.0
 
