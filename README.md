@@ -15,3 +15,7 @@ Tipped Gold will count towards Obol point (reward cards) progress with Charon.
 ![Tipping unspent Gold to Charon](https://github.com/user-attachments/assets/fd48bf46-97db-45a1-b10a-4dc6254f27d9)
 
 ![No Gold, no tipping](https://github.com/user-attachments/assets/35c6b35f-deef-4eb5-a80e-18e774f0e665)
+
+> [!INFO]
+> You can contribute to this mod by providing a translation for your native language!
+> To learn how to, take a look at the [localization guide](https://github.com/NikkelM/Hades-II-CharonsTipJar/blob/main/src/Game/Text/README.md).
