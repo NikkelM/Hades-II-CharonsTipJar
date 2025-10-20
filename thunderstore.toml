@@ -5,7 +5,7 @@ schemaVersion = "0.0.1"
 [package]
 namespace = "NikkelM"
 name = "Charons_Tip_Jar"
-versionNumber = "1.4.2"
+versionNumber = "1.5.0"
 description = "Tip any unspent Gold to Charon before facing the final boss of a run or Chaos trial, and earn progress towards Obol point rewards!"
 websiteUrl = "https://github.com/NikkelM/Hades-II-CharonsTipJar"
 containsNsfwContent = false
