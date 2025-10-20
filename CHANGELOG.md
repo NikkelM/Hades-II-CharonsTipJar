@@ -1,11 +1,18 @@
 # Changelog
 
-## v1.4.2
+## v1.5.0
 
 <!--Releasenotes start-->
+- Fixed a missing button prompt text when the player has already tipped Charon, but still has money (by destroying an urn after tipping).
+- The button prompt when you have not been introduced to the tip jar yet will no longer indicate that you will immediately tip your Gold to Charon.
+- You will no longer be eligible for the "100% Gold-Free" run clear title if you tipped Charon during the run.
+- Added compatibility with the upcoming ["Hades run in Hades II"](https://github.com/NikkelM/Hades-II-HadesBiomes) mod, placing a tip jar in the hub room in Styx.
+<!--Releasenotes end-->
+
+## v1.4.2
+
 - If participating in a Chaos trial, the tip jar will now always appear in the final room before the boss, even if it contains a free reward and not a shop.
 - Prevented voicelines from playing where Melinoe speaks to Charon even when he is not present in the current room.
-<!--Releasenotes end-->
 
 ## v1.4.1
 

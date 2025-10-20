@@ -117,6 +117,7 @@ local modsNikkelMCharonsTipJarTipJarIntro01_A = {
 	PlayOnce = true,
 	PreEventFunctionName = _PLUGIN.guid .. "." .. "SetConversationIds",
 	{
+		Cue = "/VO/ModsNikkelMCharonsTipJarTipJarIntro01_A_Melinoe01",
 		UsePlayerSource = true,
 		PreLineAnim = "MelTalkPensive01",
 		PreLineAnimTarget = "Hero",
@@ -131,6 +132,7 @@ local modsNikkelMCharonsTipJarTipJarIntro01_A = {
 		Text = "{#Emph}Haaaa{#Prev}, hrrrnnnnggghhh..."
 	},
 	{
+		Cue = "/VO/ModsNikkelMCharonsTipJarTipJarIntro01_A_Melinoe02",
 		UsePlayerSource = true,
 		PreLineAnim = "MelTalkBrooding01",
 		PreLineAnimTarget = "Hero",
@@ -148,6 +150,7 @@ local modsNikkelMCharonsTipJarTipJarIntro01_A = {
 		Text = "{#Emph}Hrrnnaaaauugghh..."
 	},
 	{
+		Cue = "/VO/ModsNikkelMCharonsTipJarTipJarIntro01_A_Melinoe03",
 		UsePlayerSource = true,
 		PreLineAnim = "MelTalkExplaining01",
 		PreLineAnimTarget = "Hero",
@@ -170,6 +173,7 @@ local modsNikkelMCharonsTipJarTipJarIntro01_B = {
 	PlayOnce = true,
 	PreEventFunctionName = _PLUGIN.guid .. "." .. "SetConversationIds",
 	{
+		Cue = "/VO/ModsNikkelMCharonsTipJarTipJarIntro01_B_Melinoe01",
 		UsePlayerSource = true,
 		PreLineAnim = "MelTalkPensive01",
 		PreLineAnimTarget = "Hero",
@@ -178,12 +182,14 @@ local modsNikkelMCharonsTipJarTipJarIntro01_B = {
 		"Oh, there is a note on this box... {#Emph}Hey M. Leave any leftover Gold you have in here. Hermes will get it to me. Charon"
 	},
 	{
+		Cue = "/VO/ModsNikkelMCharonsTipJarTipJarIntro01_B_Melinoe02",
 		UsePlayerSource = true,
 		Portrait = "Portrait_Mel_Intense_01",
 		Text =
 		"He's right. I won't have any use for the remaining Gold in my possession going forward. One way or another, I will return to shadow soon."
 	},
 	{
+		Cue = "/VO/ModsNikkelMCharonsTipJarTipJarIntro01_B_Melinoe03",
 		UsePlayerSource = true,
 		PostLineAnim = "MelinoeIdleWeaponless",
 		PostLineAnimTarget = "Hero",
@@ -300,6 +306,7 @@ function mod.SpawnCharonsTipJar(source, args)
 	-- Copies the mailbox item
 	local tipJar = game.DeepCopyTable(game.HubRoomData.Hub_Main.ObstacleData[583652]) or {}
 
+	tipJar.Name = "ModsNikkelMCharonsTipJar_TipJar"
 	tipJar.ObjectId = SpawnObstacle({
 		Name = "SupplyDropObject",
 		Group = "Standing",
@@ -345,8 +352,10 @@ function mod.SpawnCharonsTipJar(source, args)
 			Comparison = ">",
 			Value = 0
 		},
+		-- Will be true if the player has either already tipped this run, or not been introduced to the tip jar yet
+		-- We need to make this a function call, as we can't check the (a or b) logic otherwise
 		{
-			PathTrue = { "CurrentRun", "CurrentRoom", "ModsNikkelMCharonsTipJarCharonTipped" },
+			FunctionName = _PLUGIN.guid .. "." .. "TippedThisRunOrNotIntroduced"
 		},
 	}
 	-- If the player can talk to the jar (always true), and additionally has no money (which automatically makes sure canAssist is not true at the same time), canGift is true, and the below text is shown instead of the normal UseText
@@ -385,7 +394,7 @@ function mod.DetermineAndPlayTippingPresentation(usee, args)
 		return
 	end
 
-	if game.CurrentRun.CurrentRoom.ModsNikkelMCharonsTipJarCharonTipped then
+	if game.CurrentRun.ModsNikkelMCharonsTipJarCharonTipped then
 		args.FloatText = "ModsNikkelMCharonsTipJar_AlreadyTipped_FloatText"
 		args.MelinoeVoiceLines = tippingAlreadyTippedVoiceLines
 		args.CombatTextOffsetY = -70
@@ -411,12 +420,19 @@ function mod.DummyTippingPresentation(usee, args)
 	return
 end
 
+function mod.TippedThisRunOrNotIntroduced()
+	local tippedThisRun = game.CurrentRun.ModsNikkelMCharonsTipJarCharonTipped
+	local notBeenIntroduced = not (game.GameState.TextLinesRecord.ModsNikkelMCharonsTipJarTipJarIntro01_A
+			or game.CurrentRun.TextLinesRecord.ModsNikkelMCharonsTipJarTipJarIntro01_B)
+	return tippedThisRun or notBeenIntroduced
+end
+
 function mod.TipCharonPresentation(usee, args)
 	AddInputBlock({ Name = "MelUsedTipJar" })
 	-- Disable using the tip jar (removes input prompt)
 	UseableOff({ Id = usee.ObjectId })
 
-	game.CurrentRun.CurrentRoom.ModsNikkelMCharonsTipJarCharonTipped = true
+	game.CurrentRun.ModsNikkelMCharonsTipJarCharonTipped = true
 	local moneyTipped = game.GameState.Resources.Money
 
 	-- Play animations & voicelines
@@ -495,3 +511,8 @@ function mod.SetConversationIds(source, args, textLines)
 		end
 	end
 end
+
+-- Prevent the player from being eligible for the ClearMoneyNone run clear title if they used the tip jar
+table.insert(game.GameData.RunClearMessageData.ClearMoneyNone.GameStateRequirements, {
+	PathFalse = { "CurrentRun", "ModsNikkelMCharonsTipJarCharonTipped" },
+})
