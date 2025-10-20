@@ -230,6 +230,16 @@ function mod.SpawnCharonsTipJar(source, args)
 	-- 							778667 -- ZagContractReward
 	-- Q_PreBoss01: 769407 -- Hermes (works also if he is not present)
 	-- 							793525 -- ZagContractReward
+
+	-- Compatibility with HadesBiomes mod
+	-- A_PreBoss01: 370061 -- Charon
+	--              486416 -- Reward spawn ID
+	-- X_PreBoss01: 370061 -- Charon
+	--              547715 -- Reward spawn ID
+	-- Y_PreBoss01: 370002 -- Charon
+	--              543253 -- Reward spawn ID
+	-- D_Hub      : 514700 -- Charon
+
 	local spawnId = nil
 	local flipHorizontal = false
 	-- Positive X is right, positive Y is down
@@ -260,6 +270,15 @@ function mod.SpawnCharonsTipJar(source, args)
 		offsetX = -450
 		offsetY = -1200
 		flipHorizontal = true
+
+		-- Compatibility with the HadesBiomes mod
+	elseif source.Name == "D_Hub" then
+		-- Always has Charon present
+		spawnId = 514700
+		-- Based on Charon, to the top left next to the bag and candle
+		offsetX = -180
+		offsetY = -350
+
 		-- If we are in a "normal" Chaos trial, also spawn the tip jar in all other pre-boss rooms
 		-- Always need to spawn it relative to the ZagContractReward, as Charon may not be present if the player chose a free reward
 		-- In those cases, the tip jar will be invisible and not work if spawned relative to the CharonId
@@ -293,6 +312,24 @@ function mod.SpawnCharonsTipJar(source, args)
 			spawnId = 778667
 			offsetX = 1380
 			offsetY = -490
+
+			-- Compatibility rooms with the HadesBiomes mod
+		elseif source.Name == "A_PreBoss01" then
+			-- Based on the reward spawn, to the left of the cage on the right
+			spawnId = 486416
+			offsetX = 620
+			offsetY = -80
+		elseif source.Name == "X_PreBoss01" then
+			-- Based on the reward spawn, to the left of the exit
+			spawnId = 547715
+			offsetX = 210
+			offsetY = -275
+		elseif source.Name == "Y_PreBoss01" then
+			-- Based on the reward spawn below the sword on the left of the door
+			spawnId = 543253
+			offsetX = 890
+			offsetY = -790
+			flipHorizontal = true
 		else
 			return
 		end
@@ -423,7 +460,7 @@ end
 function mod.TippedThisRunOrNotIntroduced()
 	local tippedThisRun = game.CurrentRun.ModsNikkelMCharonsTipJarCharonTipped
 	local notBeenIntroduced = not (game.GameState.TextLinesRecord.ModsNikkelMCharonsTipJarTipJarIntro01_A
-			or game.CurrentRun.TextLinesRecord.ModsNikkelMCharonsTipJarTipJarIntro01_B)
+		or game.CurrentRun.TextLinesRecord.ModsNikkelMCharonsTipJarTipJarIntro01_B)
 	return tippedThisRun or notBeenIntroduced
 end
 
