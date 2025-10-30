@@ -44,6 +44,7 @@ local function on_ready()
 	-- Localization/Text replacements
 	import 'Game/Text/HelpText.de.sjson.lua'
 	import 'Game/Text/HelpText.en.sjson.lua'
+	import 'Game/Text/HelpText.zh-CN.sjson.lua'
 
 	import "Scripts/CharonsTipJar.lua"
 end

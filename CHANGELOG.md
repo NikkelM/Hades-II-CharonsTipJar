@@ -1,10 +1,14 @@
 # Changelog
 
-## v1.5.1
+## v1.5.2
 
 <!--Releasenotes start-->
-- Fixed Readme layout on Thunderstore.
+- Added Simplified Chinese localization (by @Doro on Discord).
 <!--Releasenotes end-->
+
+## v1.5.1
+
+- Fixed Readme layout on Thunderstore.
 
 ## v1.5.0
 
