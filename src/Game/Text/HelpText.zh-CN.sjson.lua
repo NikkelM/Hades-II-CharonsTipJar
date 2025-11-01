@@ -8,38 +8,45 @@ local newData = {
 	-- If the player has money
 	{
 		Id = "ModsNikkelMCharonsTipJar_TipJarUseText",
-		DisplayName = "{I}小费{$GameState.Resources.Money}{!Icons.Currency}",
+		DisplayName = "{I}给{$GameState.Resources.Money}{!Icons.Currency}小费",
+		-- Original: "{I} Tip {$GameState.Resources.Money}{!Icons.Currency}"
 	},
 	-- If the player has no money
 	{
 		Id = "ModsNikkelMCharonsTipJar_TipJarUseText_NoMoney",
-		DisplayName = "{I}{#LockedFormat}小费{!Icons.Currency}？",
+		DisplayName = "{I}{#LockedFormat}要给{!Icons.Currency}小费？",
+		-- Original: "{I} {#LockedFormat}Tip {!Icons.Currency}?"
 	},
 	-- If the player has money, but has already tipped
 	{
 		Id = "ModsNikkelMCharonsTipJar_TipJarUseText_AlreadyTipped",
-		DisplayName = "{I}{#LockedFormat}小费{$GameState.Resources.Money}{!Icons.Currency}？",
+		DisplayName = "{I}{#LockedFormat}再给{$GameState.Resources.Money}{!Icons.Currency}小费？",
+		-- Original: "{I} {#LockedFormat}Tip {$GameState.Resources.Money}{!Icons.Currency}?"
 	},
 	-- Floating text overhead if tipping with no money
 	{
 		Id = "ModsNikkelMCharonsTipJar_NoMoney_FloatText",
 		DisplayName = "没有{#CombatTextHighlightFormat}金币{!Icons.Currency}{#Prev}给小费！",
+		-- Original: "No {#CombatTextHighlightFormat}Gold{!Icons.Currency} {#Prev}to tip!"
 	},
 	-- Floating text overhead if already tipped
 	{
 		Id = "ModsNikkelMCharonsTipJar_AlreadyTipped_FloatText",
-		DisplayName = "已经给过小费了{!Icons.Currency}{#CombatTextHighlightFormat}{$Keywords.CharCharon}{#Prev}！",
+		DisplayName = "已经给过{!Icons.Currency}{#CombatTextHighlightFormat}{$Keywords.CharCharon}{#Prev}小费了！",
+		-- Original: "Already tipped {!Icons.Currency} {#CombatTextHighlightFormat}{$Keywords.CharCharon}{#Prev}!"
 	},
 	-- Floating text overhead while tipping
 	{
 		Id = "ModsNikkelMCharonsTipJar_TipInProgress_FloatText",
-		DisplayName = "{#CombatTextHighlightFormat}{$Keywords.CharCharon}{#Prev}收到小费{!Icons.Currency}！",
+		DisplayName = "{#CombatTextHighlightFormat}{$Keywords.CharCharon}{#Prev}收到{!Icons.Currency}小费！",
+		-- Original: "{#CombatTextHighlightFormat}{$Keywords.CharCharon} {#Prev} accepts the Tip {!Icons.Currency}!"
 	},
 	-- Floating text overhead while tipping with >=200 money
 	{
 		Id = "ModsNikkelMCharonsTipJar_TipInProgress_Generous_FloatText",
 		DisplayName =
-		"{#CombatTextHighlightFormat}{$Keywords.CharCharon}{#Prev}收到{#Emph}慷慨的{#Prev}小费{!Icons.Currency}！",
+		"{#CombatTextHighlightFormat}{$Keywords.CharCharon}{#Prev}收到{#Emph}慷慨的{#Prev}{!Icons.Currency}小费！",
+		-- Original: "{#CombatTextHighlightFormat}{$Keywords.CharCharon} {#Prev} accepts the {#Emph}generous {#Prev} Tip {!Icons.Currency}!"
 	},
 
 	-- Localizations of the intro conversations
@@ -47,26 +54,26 @@ local newData = {
 	{
 		Id = "ModsNikkelMCharonsTipJarTipJarIntro01_A_Melinoe01",
 		InheritFrom = "BaseNarrative",
-		DisplayName = "卡戎大人，这是什么？这个装满钱币的盒子？我猜，这莫非是某种能助我完成任务的新货物？",
+		DisplayName = "卡戎大人，这是什么？这个装满金币的盒子？我猜，这莫非是某种能助我完成任务的新货物？",
 		-- Original: "What is this over here, Lord Charon? The box with all the coins in it? I don't suppose this is some sort of new ware to help me with my task, is it?"
 	},
 	{
 		Id = "ModsNikkelMCharonsTipJarTipJarIntro01_A_Melinoe02",
 		InheritFrom = "BaseNarrative",
-		DisplayName = "您说得对，我身上剩下的金币对我来说也确实没什么用了。无论如何，我很快都将重归阴影。不如现在就把钱币留给您，也好让它们物尽其用。",
+		DisplayName = "您说得对，我身上剩下的金币对我来说也确实没什么用了。无论如何，我很快都将重归阴影。不如现在就把金币留给您，也好让它们物尽其用。",
 		-- Original: "You're right, I won't have any use for the remaining Gold in my possession going forward. One way or another, I will return to shadow soon. I might as well leave the coins with you now to have them disposed of properly."
 	},
 	{
 		Id = "ModsNikkelMCharonsTipJarTipJarIntro01_A_Melinoe03",
 		InheritFrom = "BaseNarrative",
-		DisplayName = "哎呀，多谢！您明知完全没必要将这些'小费'也算进您的忠诚度计划里，但尽管如此，我依然感激不尽，我的大人。",
+		DisplayName = "哎呀，多谢！您明知完全没必要将这些小费也算进您的忠诚度计划里，但尽管如此，我依然感激不尽，我的大人。",
 		-- Original: "Why thank you! I hope you know it is entirely unnecessary for you to include these tips in your loyalty program, but I do appreciate it nonetheless, my lord."
 	},
 	-- If Charon is not present
 	{
 		Id = "ModsNikkelMCharonsTipJarTipJarIntro01_B_Melinoe01",
 		InheritFrom = "BaseNarrative",
-		DisplayName = "哦，这盒子上有张字条……{#Emph}“嘿，小墨。把你剩下的金子放这儿就行。赫尔墨斯会转交给我。——卡戎”",
+		DisplayName = "哦，这盒子上有张字条……{#Emph}“嘿，小墨。把你剩下的金币放这儿就行。赫尔墨斯会转交给我。——卡戎”",
 		-- Original: "Oh, there is a note on this box... {#Emph}Hey M. Leave any leftover Gold you have in here. Hermes will get it to me. Charon"
 	},
 	{

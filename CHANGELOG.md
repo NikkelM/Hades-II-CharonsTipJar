@@ -1,10 +1,14 @@
 # Changelog
 
-## v1.5.2
+## v1.5.3
 
 <!--Releasenotes start-->
-- Added Simplified Chinese localization (by @Doro on Discord).
+- Improved Simplified Chinese localization.
 <!--Releasenotes end-->
+
+## v1.5.2
+
+- Added Simplified Chinese localization (by Doro on Discord).
 
 ## v1.5.1
 
