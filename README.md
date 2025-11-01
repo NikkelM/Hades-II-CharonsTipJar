@@ -25,4 +25,4 @@ The mod is currently available in the following languages:
 
 - English
 - German
-- Simplified Chinese (by @Doro on Discord)
+- Simplified Chinese (by Doro on Discord)
