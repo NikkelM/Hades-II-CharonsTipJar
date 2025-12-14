@@ -1,10 +1,14 @@
 # Changelog
 
-## v1.5.3
+## v1.5.4
 
 <!--Releasenotes start-->
-- Improved Simplified Chinese localization.
+- You will no longer be eligible for the "Poor as a Pauper" run clear title if you tipped Charon during a Zagreus' Journey underworld run.
 <!--Releasenotes end-->
+
+## v1.5.3
+
+- Improved Simplified Chinese localization.
 
 ## v1.5.2
 

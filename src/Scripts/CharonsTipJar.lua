@@ -548,8 +548,3 @@ function mod.SetConversationIds(source, args, textLines)
 		end
 	end
 end
-
--- Prevent the player from being eligible for the ClearMoneyNone run clear title if they used the tip jar
-table.insert(game.GameData.RunClearMessageData.ClearMoneyNone.GameStateRequirements, {
-	PathFalse = { "CurrentRun", "ModsNikkelMCharonsTipJarCharonTipped" },
-})
