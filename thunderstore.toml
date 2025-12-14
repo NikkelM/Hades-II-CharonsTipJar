@@ -6,7 +6,7 @@ schemaVersion = "0.0.1"
 namespace = "NikkelM"
 name = "Charons_Tip_Jar"
 versionNumber = "1.5.4"
-description = "Tip any unspent Gold to Charon before facing the final boss of a run or Chaos trial, and earn progress towards Obol point rewards!"
+description = "Tip any unspent Gold to Charon before facing the final boss of a run or Chaos trial, and earn progress towards Obol point rewards! Compatible with Zagreus' Journey."
 websiteUrl = "https://github.com/NikkelM/Hades-II-CharonsTipJar"
 containsNsfwContent = false
 
