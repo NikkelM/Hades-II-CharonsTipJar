@@ -66,6 +66,50 @@ local tippingInteractVoicelines = {
 				},
 			}
 		},
+		{
+			Cue = "/VO/Melinoe_1220",
+			Text = "I have the Gold.",
+			GameStateRequirements =
+			{
+				{
+					FunctionName = "RequiredAlive",
+					FunctionArgs = { Units = { "NPC_Charon_01", }, Alive = true },
+				},
+			}
+		},
+		{
+			Cue = "/VO/Melinoe_1221",
+			Text = "Here's the Gold.",
+			GameStateRequirements =
+			{
+				{
+					FunctionName = "RequiredAlive",
+					FunctionArgs = { Units = { "NPC_Charon_01", }, Alive = true },
+				},
+			}
+		},
+		{
+			Cue = "/VO/Melinoe_0558",
+			Text = "Here you are.",
+			GameStateRequirements =
+			{
+				{
+					FunctionName = "RequiredAlive",
+					FunctionArgs = { Units = { "NPC_Charon_01", }, Alive = true },
+				},
+			}
+		},
+		{
+			Cue = "/VO/Melinoe_3790",
+			Text = "Thank you for being here.",
+			GameStateRequirements =
+			{
+				{
+					FunctionName = "RequiredAlive",
+					FunctionArgs = { Units = { "NPC_Charon_01", }, Alive = true },
+				},
+			}
+		},
 		-- Charon must *not* be present
 		{
 			Cue = "/VO/Melinoe_1290",
@@ -231,7 +275,7 @@ function mod.SpawnCharonsTipJar(source, args)
 	-- Q_PreBoss01: 769407 -- Hermes (works also if he is not present)
 	-- 							793525 -- ZagContractReward
 
-	-- Compatibility with HadesBiomes mod
+	-- Compatibility with Zagreus' Journey
 	-- A_PreBoss01: 370061 -- Charon
 	--              486416 -- Reward spawn ID
 	-- X_PreBoss01: 370061 -- Charon
@@ -244,11 +288,18 @@ function mod.SpawnCharonsTipJar(source, args)
 	local flipHorizontal = false
 	-- Positive X is right, positive Y is down
 	local offsetX, offsetY = 0, 0
-	-- Is this a normal bounty (not a Chaos above/below trial)?
+
+	-- Is this a normal bounty (not a randomized Chaos above/below trial)?
 	local isStandardPackageBountyActive = game.IsGameStateEligible(source,
 		game.NamedRequirementsData.StandardPackageBountyActive, args)
+	-- Is this the final biome of the run? Works for both normal and DreamRuns
+	local isInFinalBiome = (game.CurrentRun.EnteredBiomes or 0) >= (game.GameData.FullRunBiomeCount or 4)
 
-	-- Always spawn the tip jar in a shop room before the final boss of the run
+	-- Spawn the tip jar in the final shop of a region if it is the final region of the run, or a non-randomized bounty is active
+	if not isInFinalBiome and not isStandardPackageBountyActive then
+		return
+	end
+
 	if source.Name == "I_PreBoss01" then
 		-- Always has Charon present
 		-- Based on Charon, to the bottom left of him
@@ -270,69 +321,60 @@ function mod.SpawnCharonsTipJar(source, args)
 		offsetX = -450
 		offsetY = -1200
 		flipHorizontal = true
+	elseif source.Name == "F_PreBoss01" then
+		-- Based on ZagContractReward offset to the right next to the exit door
+		spawnId = 776332
+		offsetX = 1370
+		offsetY = -360
+	elseif source.Name == "G_PreBoss01" then
+		-- On the ZagContractReward, between Charon and the shop items
+		spawnId = 776334
+	elseif source.Name == "H_PreBoss01" then
+		-- Based on ZagContractReward to the bottom right of the exit door
+		spawnId = 776337
+		offsetX = 200
+		offsetY = -200
+	elseif source.Name == "N_PreBoss01" then
+		-- Based on ZagContractReward to the bottom left of the exit door, below the vases
+		spawnId = 776338
+		offsetX = 225
+		offsetY = -160
+		flipHorizontal = true
+	elseif source.Name == "O_PreBoss01" then
+		-- Based on Charon scarecrow above it to the left of the exit door
+		spawnId = 690991
+		offsetX = 150
+		offsetY = -350
+	elseif source.Name == "P_PreBoss01" then
+		-- Based on ZagContractReward to the right of the rewards to the left of the stairs
+		spawnId = 778667
+		offsetX = 1380
+		offsetY = -490
 
-		-- Compatibility with the HadesBiomes mod
+
+		-- Compatibility with Zagreus' Journey
+	elseif source.Name == "A_PreBoss01" then
+		-- Based on the reward spawn, to the left of the cage on the right
+		spawnId = 486416
+		offsetX = 620
+		offsetY = -80
+	elseif source.Name == "X_PreBoss01" then
+		-- Based on the reward spawn, to the left of the exit
+		spawnId = 547715
+		offsetX = 210
+		offsetY = -275
+	elseif source.Name == "Y_PreBoss01" then
+		-- Based on the reward spawn below the sword on the left of the door
+		spawnId = 543253
+		offsetX = 890
+		offsetY = -790
+		flipHorizontal = true
 	elseif source.Name == "D_Hub" then
 		-- Always has Charon present
 		spawnId = 514700
 		-- Based on Charon, to the top left next to the bag and candle
 		offsetX = -180
 		offsetY = -350
-
-		-- If we are in a "normal" Chaos trial, also spawn the tip jar in all other pre-boss rooms
-		-- Always need to spawn it relative to the ZagContractReward, as Charon may not be present if the player chose a free reward
-		-- In those cases, the tip jar will be invisible and not work if spawned relative to the CharonId
-	elseif isStandardPackageBountyActive then
-		if source.Name == "F_PreBoss01" then
-			-- Based on ZagContractReward offset to the right next to the exit door
-			spawnId = 776332
-			offsetX = 1370
-			offsetY = -360
-		elseif source.Name == "G_PreBoss01" then
-			-- On the ZagContractReward, between Charon and the shop items
-			spawnId = 776334
-		elseif source.Name == "H_PreBoss01" then
-			-- Based on ZagContractReward to the bottom right of the exit door
-			spawnId = 776337
-			offsetX = 200
-			offsetY = -200
-		elseif source.Name == "N_PreBoss01" then
-			-- Based on ZagContractReward to the bottom left of the exit door, below the vases
-			spawnId = 776338
-			offsetX = 225
-			offsetY = -160
-			flipHorizontal = true
-		elseif source.Name == "O_PreBoss01" then
-			-- Based on Charon scarecrow above it to the left of the exit door
-			spawnId = 690991
-			offsetX = 150
-			offsetY = -350
-		elseif source.Name == "P_PreBoss01" then
-			-- Based on ZagContractReward to the right of the rewards to the left of the stairs
-			spawnId = 778667
-			offsetX = 1380
-			offsetY = -490
-
-			-- Compatibility rooms with the HadesBiomes mod
-		elseif source.Name == "A_PreBoss01" then
-			-- Based on the reward spawn, to the left of the cage on the right
-			spawnId = 486416
-			offsetX = 620
-			offsetY = -80
-		elseif source.Name == "X_PreBoss01" then
-			-- Based on the reward spawn, to the left of the exit
-			spawnId = 547715
-			offsetX = 210
-			offsetY = -275
-		elseif source.Name == "Y_PreBoss01" then
-			-- Based on the reward spawn below the sword on the left of the door
-			spawnId = 543253
-			offsetX = 890
-			offsetY = -790
-			flipHorizontal = true
-		else
-			return
-		end
 	else
 		return
 	end

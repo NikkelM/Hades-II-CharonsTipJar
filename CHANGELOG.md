@@ -1,10 +1,15 @@
 # Changelog
 
-## v1.5.4
+## v1.6.0
 
 <!--Releasenotes start-->
-- You will no longer be eligible for the "Poor as a Pauper" run clear title if you tipped Charon during a Zagreus' Journey underworld run.
+- Added compatibility with Dream Dives - a Tip Jar will now always show in the final region of a Dream Dive, and will not show in Tartarus and the Summit if they are not the final region.
+- Added some additional voicelines when Melinoë tips Charon.
 <!--Releasenotes end-->
+
+## v1.5.4
+
+- You will no longer be eligible for the "Poor as a Pauper" run clear title if you tipped Charon during a Zagreus' Journey underworld run.
 
 ## v1.5.3
 
