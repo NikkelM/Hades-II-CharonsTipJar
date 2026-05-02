@@ -1,11 +1,15 @@
 # Changelog
 
-## v1.6.0
+## v1.6.1
 
 <!--Releasenotes start-->
+- Fixed the Tip Jar overlaying with a Contract reward item in the Oceanus shop room.
+<!--Releasenotes end-->
+
+## v1.6.0
+
 - Added compatibility with Dream Dives - a Tip Jar will now always show in the final region of a Dream Dive, and will not show in Tartarus and the Summit if they are not the final region.
 - Added some additional voicelines when Melinoë tips Charon.
-<!--Releasenotes end-->
 
 ## v1.5.4
 

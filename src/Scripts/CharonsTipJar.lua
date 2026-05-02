@@ -327,8 +327,11 @@ function mod.SpawnCharonsTipJar(source, args)
 		offsetX = 1370
 		offsetY = -360
 	elseif source.Name == "G_PreBoss01" then
-		-- On the ZagContractReward, between Charon and the shop items
+		-- Based on ZagContractReward, bottom left before the gap across
 		spawnId = 776334
+		offsetX = -820
+		offsetY = 170
+		flipHorizontal = true
 	elseif source.Name == "H_PreBoss01" then
 		-- Based on ZagContractReward to the bottom right of the exit door
 		spawnId = 776337
