@@ -1,10 +1,14 @@
 # Changelog
 
-## v1.6.1
+## v1.6.2
 
 <!--Releasenotes start-->
-- Fixed the Tip Jar overlaying with a Contract reward item in the Oceanus shop room.
+- The mod now packs the tip jar texture separately from the main game's package, which means it no longer needs to load the entire Crossroads package in the final shop rooms.
 <!--Releasenotes end-->
+
+## v1.6.1
+
+- Fixed the Tip Jar overlaying with a Contract reward item in the Oceanus shop room.
 
 ## v1.6.0
 

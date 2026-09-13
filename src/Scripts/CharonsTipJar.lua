@@ -383,7 +383,7 @@ function mod.SpawnCharonsTipJar(source, args)
 	end
 
 	-- We need to load the package containing the obstacle graphics
-	LoadPackages({ Name = "BiomeHub" })
+	LoadPackages({ Name = "ModsNikkelMCharonsTipJar" })
 
 	-- Copies the mailbox item
 	local tipJar = game.DeepCopyTable(game.HubRoomData.Hub_Main.ObstacleData[583652]) or {}
