@@ -5,7 +5,7 @@ A "tip jar" will appear next to Charon, and interacting with it will tip all Gol
 
 When participating in a Chaos trial, a tip jar will also be conveniently placed in the shop room just before the final boss of the trial as well, no matter the region it takes place in.
 
-The mod is also compatible with [Zagreus' Journey](https://thunderstore.io/c/hades-ii/p/NikkelM/Zagreus_Journey/), and will place tip jars in Tartarus, Asphodel, Elysium and the Temple of Styx according to the same rules.
+The mod is also compatible with longer Dream Dives from [Dream Dive Tweaks](https://thunderstore.io/c/hades-ii/p/zerp/DreamDiveTweaks/), as well as [Zagreus' Journey](https://thunderstore.io/c/hades-ii/p/NikkelM/Zagreus_Journey/), where it will place tip jars in Tartarus, Asphodel, Elysium and the Temple of Styx according to the same rules.
 
 Tipped Gold will count towards Obol point (reward cards) progress with Charon.
 
