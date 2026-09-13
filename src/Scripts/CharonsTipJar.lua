@@ -1,7 +1,7 @@
 local mod = modutil.mod.Mod.Register(_PLUGIN.guid)
 
 -- Charon voicelines thanking for the tip, if he is there himself. Same as purchase responses
-local postTippingCharonVoicelines = game.DeepCopyTable(game.GlobalVoiceLines.PurchasedConsumableVoiceLines[2])
+local postTippingCharonVoicelines = game.DeepCopyTable(game.GlobalVoiceLines.PurchasedConsumableVoiceLines[2]) or {}
 -- Charon must be present (alive) for him to respond
 postTippingCharonVoicelines.GameStateRequirements = {
 	{
