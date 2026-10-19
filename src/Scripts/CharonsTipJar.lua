@@ -3,12 +3,23 @@ local mod = modutil.mod.Mod.Register(_PLUGIN.guid)
 -- Charon voicelines thanking for the tip, if he is there himself. Same as purchase responses
 local postTippingCharonVoicelines = game.DeepCopyTable(game.GlobalVoiceLines.PurchasedConsumableVoiceLines[2]) or {}
 -- Charon must be present (alive) for him to respond
-postTippingCharonVoicelines.GameStateRequirements = {
+local charonAliveRequirements = {
 	{
 		FunctionName = "RequiredAlive",
 		FunctionArgs = { Units = { "NPC_Charon_01", }, Alive = true },
 	},
+	{
+		PathFalse = { "CurrentRun", "Hero", "SilenceMelinoe" },
+	},
 }
+
+local basicRequirements = {
+	{
+		PathFalse = { "CurrentRun", "Hero", "SilenceMelinoe" },
+	},	
+}
+
+postTippingCharonVoicelines.GameStateRequirements = charonAliveRequirements
 postTippingCharonVoicelines.ChanceToPlay = 1
 
 local tippingInteractVoicelines = {
@@ -17,116 +28,61 @@ local tippingInteractVoicelines = {
 		-- BreakIfPlayed = false,
 		RandomRemaining = true,
 		PreLineWait = 0.25,
-		Cooldowns =
-		{
+		Cooldowns = {
 			{ Name = "MelinoeAnyQuipSpeech" },
 		},
 		-- Charon must be present
 		{
 			Cue = "/VO/Melinoe_2358",
 			Text = "This is for you!",
-			GameStateRequirements =
-			{
-				{
-					FunctionName = "RequiredAlive",
-					FunctionArgs = { Units = { "NPC_Charon_01", }, Alive = true },
-				},
-			}
+			GameStateRequirements = charonAliveRequirements
 		},
 		{
 			Cue = "/VO/Melinoe_2358_B",
 			Text = "This is for you!",
-			GameStateRequirements =
-			{
-				{
-					FunctionName = "RequiredAlive",
-					FunctionArgs = { Units = { "NPC_Charon_01", }, Alive = true },
-				},
-			}
+			GameStateRequirements = charonAliveRequirements
 		},
 		{
 			Cue = "/VO/Melinoe_2355",
 			Text = "For you!",
-			GameStateRequirements =
-			{
-				{
-					FunctionName = "RequiredAlive",
-					FunctionArgs = { Units = { "NPC_Charon_01", }, Alive = true },
-				},
-			}
+			GameStateRequirements = charonAliveRequirements
 		},
 		{
 			Cue = "/VO/Melinoe_0557",
 			Text = "Here's the Gold.",
-			GameStateRequirements =
-			{
-				{
-					FunctionName = "RequiredAlive",
-					FunctionArgs = { Units = { "NPC_Charon_01", }, Alive = true },
-				},
-			}
+			GameStateRequirements = charonAliveRequirements
 		},
 		{
 			Cue = "/VO/Melinoe_1220",
 			Text = "I have the Gold.",
-			GameStateRequirements =
-			{
-				{
-					FunctionName = "RequiredAlive",
-					FunctionArgs = { Units = { "NPC_Charon_01", }, Alive = true },
-				},
-			}
+			GameStateRequirements = charonAliveRequirements
 		},
 		{
 			Cue = "/VO/Melinoe_1221",
 			Text = "Here's the Gold.",
-			GameStateRequirements =
-			{
-				{
-					FunctionName = "RequiredAlive",
-					FunctionArgs = { Units = { "NPC_Charon_01", }, Alive = true },
-				},
-			}
+			GameStateRequirements = charonAliveRequirements
 		},
 		{
 			Cue = "/VO/Melinoe_0558",
 			Text = "Here you are.",
-			GameStateRequirements =
-			{
-				{
-					FunctionName = "RequiredAlive",
-					FunctionArgs = { Units = { "NPC_Charon_01", }, Alive = true },
-				},
-			}
+			GameStateRequirements = charonAliveRequirements
 		},
 		{
 			Cue = "/VO/Melinoe_3790",
 			Text = "Thank you for being here.",
-			GameStateRequirements =
-			{
-				{
-					FunctionName = "RequiredAlive",
-					FunctionArgs = { Units = { "NPC_Charon_01", }, Alive = true },
-				},
-			}
+			GameStateRequirements = charonAliveRequirements
 		},
 		-- Charon must *not* be present
 		{
 			Cue = "/VO/Melinoe_1290",
 			Text = "Lord Charon will want this.",
-			GameStateRequirements =
-			{
-				{
-					FunctionName = "RequiredAlive",
-					FunctionArgs = { Units = { "NPC_Charon_01", }, Alive = false },
-				},
-			}
+			GameStateRequirements = charonAliveRequirements
 		},
 		-- Anything works
-		{ Cue = "/VO/Melinoe_0187",      Text = "A gift..." },
-		{ Cue = "/VO/Melinoe_3425",      Text = "In service to the realm." },
-		{ Cue = "/VO/MelinoeField_1445", Text = "I do have Gold to spare..." },
-		{ Cue = "/VO/MelinoeField_1630", Text = "Who needs Gold anyway..." }
+		{ Cue = "/VO/Melinoe_0187",      Text = "A gift...", GameStateRequirements = basicRequirements },
+		{ Cue = "/VO/Melinoe_3425",      Text = "In service to the realm.", GameStateRequirements = basicRequirements },
+		{ Cue = "/VO/MelinoeField_1445", Text = "I do have Gold to spare...", GameStateRequirements = basicRequirements },
+		{ Cue = "/VO/MelinoeField_1630", Text = "Who needs Gold anyway...", GameStateRequirements = basicRequirements }
 	},
 	postTippingCharonVoicelines
 }
@@ -134,25 +90,23 @@ local tippingInteractVoicelines = {
 local tippingNoMoneyVoiceLines = {
 	RandomRemaining = true,
 	PreLineWait = 0.25,
-	Cooldowns =
-	{
+	Cooldowns = {
 		{ Name = "MelinoeAnyQuipSpeech" },
 	},
-	{ Cue = "/VO/Melinoe_1851", Text = "I'll have to get more." },
-	{ Cue = "/VO/Melinoe_1852", Text = "Thought I had more..." },
-	{ Cue = "/VO/Melinoe_1223", Text = "Thought I had more Gold..." },
-	{ Cue = "/VO/Melinoe_1224", Text = "Don't have the Gold for this." }
+	{ Cue = "/VO/Melinoe_1851", Text = "I'll have to get more.", GameStateRequirements = basicRequirements },
+	{ Cue = "/VO/Melinoe_1852", Text = "Thought I had more...", GameStateRequirements = basicRequirements },
+	{ Cue = "/VO/Melinoe_1223", Text = "Thought I had more Gold...", GameStateRequirements = basicRequirements },
+	{ Cue = "/VO/Melinoe_1224", Text = "Don't have the Gold for this.", GameStateRequirements = basicRequirements }
 }
 
 local tippingAlreadyTippedVoiceLines = {
 	RandomRemaining = true,
 	PreLineWait = 0.25,
-	Cooldowns =
-	{
+	Cooldowns = {
 		{ Name = "MelinoeAnyQuipSpeech" },
 	},
-	{ Cue = "/VO/Melinoe_3084", Text = "No use." },
-	{ Cue = "/VO/Melinoe_2386", Text = "Can't do it." }
+	{ Cue = "/VO/Melinoe_3084", Text = "No use.", GameStateRequirements = basicRequirements },
+	{ Cue = "/VO/Melinoe_2386", Text = "Can't do it.", GameStateRequirements = basicRequirements }
 }
 
 -- If Charon is present in this room
