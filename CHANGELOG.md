@@ -1,10 +1,14 @@
 # Changelog
 
-## v1.6.2
+## v1.6.3
 
 <!--Releasenotes start-->
-- The mod now packs the tip jar texture separately from the main game's package, which means it no longer needs to load the entire Crossroads package in the final shop rooms.
+- Added compatibility with the "Silence Melinoë" mod.
 <!--Releasenotes end-->
+
+## v1.6.2
+
+- The mod now packs the tip jar texture separately from the main game's package, which means it no longer needs to load the entire Crossroads package in the final shop rooms.
 
 ## v1.6.1
 
